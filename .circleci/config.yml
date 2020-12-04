@@ -18,7 +18,7 @@ jobs:
     working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
     steps:
       - checkout
-      - run git submodule update --recursive --remote
+      - run: git submodule update --recursive --remote
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
@@ -39,7 +39,7 @@ jobs:
     working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
     steps:
       - checkout
-      - run git submodule update --recursive --remote
+      - run: git submodule update --recursive --remote
       - run: make utest
 
 workflows:
