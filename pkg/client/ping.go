@@ -28,13 +28,23 @@ func (c *FilecoinRetrievalClient) gatewayPing(server string) (bool, error) {
 	if len(server) == 0 {
 		errors.New("Error: Cannot ping empty servername")
 	} else {
-		log.Println("Attempting to ping " + server)
+		log.Println("Attempting to ping \"" + server + "\"")
 	}
 
 	ra, err := net.ResolveIPAddr("ip4", server)
 	if err != nil {
 		errors.New("Error: Cannot ping empty servername")
 	}
-	log.Printf("Resolved %s as %s\n", server, ra)
+	log.Printf("Resolved %s as %s\n", server, ra.String())
+
+	// TODO have a random challenge
+	challenge := `"challenge":"123456789`
+	ttl := `"ttl":"100"`
+
+
+	res := call("establishment", challenge, ttl).Get("result").MustString()
+	log.Printf("Response from server: %s\n", res)
+
 	return true, nil
 }
+
