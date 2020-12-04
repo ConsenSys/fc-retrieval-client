@@ -1,4 +1,4 @@
-package main
+package client
 
 /*
  * Copyright 2020 ConsenSys Software Inc.
@@ -17,36 +17,24 @@ package main
 
 import (
 	"log"
-	"os"
-
-	"github.com/ConsenSys/fc-retrieval-client/pkg/client"
+	"net"
+//	"os"
+//	"time"
+	"errors"
 )
 
-var (
-	servername = "localhost"
-	pingserver = servername
-)
-
-func main() {
-	log.Println("Integration Test: Start")
-	integrationTests()
-	log.Println("Integration Test: End")
-}
-
-func integrationTests() {
-	//ping()
-	addGateway()
-}
-
-func addGateway() {
-	log.Println("Test: addGateway")
-	fc := client.NewFilecoinRetrievalClient()
-	fc.AddGateway("gateway")
-}
-
-func ping() {
-	if len(os.Args[1:]) > 0 {
-		pingserver = os.Args[1]
+// GatewayPing sends "ping" message to gateway
+func (c *FilecoinRetrievalClient) gatewayPing(server string) (bool, error) {
+	if len(server) == 0 {
+		errors.New("Error: Cannot ping empty servername")
+	} else {
+		log.Println("Attempting to ping " + server)
 	}
-	client.Ping(pingserver)
+
+	ra, err := net.ResolveIPAddr("ip4", server)
+	if err != nil {
+		errors.New("Error: Cannot ping empty servername")
+	}
+	log.Printf("Resolved %s as %s\n", server, ra)
+	return true, nil
 }

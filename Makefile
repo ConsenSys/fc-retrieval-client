@@ -7,12 +7,15 @@
 VERSION?=v1
 REGISTRY?=
 
-release: clean build push clean
+# This target (the first target in the build file) is the one that is executed if no 
+# command line args are specified.
+release: clean utest build itest 
 
 # builds a docker image that builds the app and packages it into a minimal docker image
 build:
 	docker build -t ${REGISTRY}fc-retrieval-client-builder .
 	docker run --rm ${REGISTRY}fc-retrieval-client-builder | docker build --pull -t "${REGISTRY}fc-retrieval-client:${VERSION}" -
+	cd fc-retrieval-gateway && $(MAKE) 
 
 # push the image to an registry
 push:
@@ -21,6 +24,11 @@ push:
 utest:
 	go test ./...
 
+itest:
+	docker-compose down
+	docker-compose up
+
+
 # remove previous images and containers
 clean:
 #	rm -f /etc/client/
@@ -28,5 +36,6 @@ clean:
 	docker rmi -f ${REGISTRY}fc-retrieval-client-builder || true
 	docker rmi -f "${REGISTRY}fc-retrieval-client:${VERSION}" || true
 
-.PHONY: release clean build push
+# Alays assume these targets are out of date.
+.PHONY: clean build release utest itest push
 
