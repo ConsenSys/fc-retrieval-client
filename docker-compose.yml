@@ -18,5 +18,15 @@ services:
     container_name: gateway
     networks:
       - shared
+
+  dbg:
+   image: busybox
+   #image: radial/busyboxplus:curl
+   container_name: dbg
+   stdin_open: true
+   tty: true
+   networks:
+     - shared
+     
 networks:
   shared:
