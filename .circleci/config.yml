@@ -20,24 +20,10 @@ jobs:
       - checkout
       - run: git submodule init
       - run: git submodule update
-#      - run:
-#          name: Check out Gateway and Provider
-#          command: |
-#            git clone https://github.com/ConsenSys/fc-retrieval-gateway.git ../fc-retrieval-gateway
-#            git --git-dir=../fc-retrieval-gateway/.git rev-parse HEAD > ../fc-retrieval-gateway/headcommit
-#            git clone https://github.com/ConsenSys/fc-retrieval-provider.git ../fc-retrieval-provider
-#            git --git-dir=../fc-retrieval-provider/.git rev-parse HEAD > ../fc-retrieval-provider/headcommit
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
-      - run: 
-        name: Build everything
-        command: |
-          make clean build
-          cd ../fc-retrieval-gateway 
-          make
-      - run: make itest
-
+      - run: make
 
   utest:
     docker:
@@ -54,6 +40,8 @@ jobs:
     working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
     steps:
       - checkout
+      - run: git submodule init
+      - run: git submodule update
       - run: make utest
 
 workflows:
@@ -62,3 +50,4 @@ workflows:
     jobs:
       - utest
       - release
+      
