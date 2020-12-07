@@ -12,10 +12,15 @@ REGISTRY?=
 release: clean utest build itest 
 
 # builds a docker image that builds the app and packages it into a minimal docker image
-build:
+buildall:
 	docker build -t ${REGISTRY}fc-retrieval-client-builder .
 	docker run --rm ${REGISTRY}fc-retrieval-client-builder | docker build --pull -t "${REGISTRY}fc-retrieval-client:${VERSION}" -
 	cd fc-retrieval-gateway && $(MAKE) 
+
+build:
+	docker build -t ${REGISTRY}fc-retrieval-client-builder .
+	docker run --rm ${REGISTRY}fc-retrieval-client-builder | docker build --pull -t "${REGISTRY}fc-retrieval-client:${VERSION}" -
+
 
 # push the image to an registry
 push:

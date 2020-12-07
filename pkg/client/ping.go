@@ -37,12 +37,14 @@ func (c *FilecoinRetrievalClient) gatewayPing(server string) (bool, error) {
 	}
 	log.Printf("Resolved %s as %s\n", server, ra.String())
 
+
+
+	args := make(map[string]interface{})
 	// TODO have a random challenge
-	challenge := `"challenge":"123456789`
-	ttl := `"ttl":"100"`
+	args["challenge"] = "123456789"
+	args["ttl"] = "100"
 
-
-	res := call("establishment", challenge, ttl).Get("result").MustString()
+	res := call("establishment", args).Get("result").MustString()
 	log.Printf("Response from server: %s\n", res)
 
 	return true, nil

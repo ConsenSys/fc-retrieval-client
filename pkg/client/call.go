@@ -4,46 +4,38 @@ package client
 
 import (
 	"github.com/bitly/go-simplejson"
-	"github.com/parnurzeal/gorequest"
 	"log"
+	"encoding/json"
+	"bytes"
+	"net/http"
+	"io/ioutil"
     //"fmt"
 )
 
 const (
-	apiUrl string = "http://gateway:80/client/establishment" 
+	apiURL string = "http://gateway:80/client/establishment" 
 )
 
-func call(args ...string) (*simplejson.Json) {
-	method := args[0]
+func call(method string, args map[string]interface{}) (*simplejson.Json) {
+	args["protocol_version"] = "1"
+	args["protocol_supported"] = "1"
+	args["message_type"] = method
+	mJSON, _ := json.Marshal(args)
+	log.Printf("JSON sent: %s", mJSON)
+	contentReader := bytes.NewReader(mJSON)
+	req, _ := http.NewRequest("POST", apiURL, contentReader)
+	req.Header.Set("Content-Type", "application/json")
 
-	protocolVer := `protocol_version":"1"`
-	protocolSupported := `"protocol_supported":"1"`
-	messageType := `message_type":"` + method + `"` 
-	postBodyPart1 := `{"jsonrpc":"2.0","` + 
-		protocolVer + `,` + 
-		protocolSupported + `,` + 
-		messageType
-
-	postBodyPart2 := ""
-	for i:= 1; i < len(args); i++ {
-		postBodyPart2 = postBodyPart2 + "," + args[i]
-	}
-	
-	postBodyPart3 := `}`
-	postBody := postBodyPart1 + postBodyPart2 + postBodyPart3
-	log.Println("postBody: " + postBody)
-
-	_, body, errs := gorequest.New().Post(apiUrl).
-		Send(postBody).
-		End()
-
+	client := &http.Client{}
+	resp, errs := client.Do(req)
 	if errs != nil {
 		panic(errs)
 	}
-	log.Println("response body: " + body)
 
+	data, _ := ioutil.ReadAll(resp.Body)
+	log.Printf("response body: %s", string(data))
 
-	js, err := simplejson.NewJson([]byte(body))
+	js, err := simplejson.NewJson(data)
 	if err != nil {
 		log.Fatalln(err)
 	}

@@ -18,6 +18,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/ConsenSys/fc-retrieval-client/pkg/client"
 )
@@ -34,6 +35,9 @@ func main() {
 }
 
 func integrationTests() {
+	log.Println(" Wait one second for the gateway to deploy and be ready for requests")
+	time.Sleep(time.Second)
+
 	//ping()
 	addGateway()
 }
