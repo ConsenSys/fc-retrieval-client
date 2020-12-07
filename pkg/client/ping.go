@@ -21,6 +21,8 @@ import (
 //	"os"
 //	"time"
 	"errors"
+
+	"github.com/ConsenSys/fc-retrieval-client/internal/network"
 )
 
 // GatewayPing sends "ping" message to gateway
@@ -44,7 +46,7 @@ func (c *FilecoinRetrievalClient) gatewayPing(server string) (bool, error) {
 	args["challenge"] = "123456789"
 	args["ttl"] = "100"
 
-	res := call("establishment", args).Get("result").MustString()
+	res := network.GatewayCall("establishment", args).Get("result").MustString()
 	log.Printf("Response from server: %s\n", res)
 
 	return true, nil

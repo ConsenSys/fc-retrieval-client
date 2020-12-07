@@ -2,6 +2,23 @@
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2.1
+
+commands:
+  prepare:
+    description: "Prepare"
+    steps:
+      - run:
+          name: Check out Gateway and Provider
+          command: |
+            git clone https://github.com/ConsenSys/fc-retrieval-gateway.git ../fc-retrieval-gateway
+            git --git-dir=../fc-retrieval-gateway/.git rev-parse HEAD > ../fc-retrieval-gateway/headcommit
+            git clone https://github.com/ConsenSys/fc-retrieval-provider.git ../fc-retrieval-provider
+            git --git-dir=../fc-retrieval-provider/.git rev-parse HEAD > ../fc-retrieval-provider/headcommit
+#      - checkout
+#      - run: git submodule init
+#      - run: git submodule update
+
+
 jobs:
   release:
     docker:
@@ -15,16 +32,18 @@ jobs:
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
+    working_directory: ~/project
     steps:
-      - checkout
-      - run: git submodule init
-      - run: git submodule update
+      - prepare
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
-      - run: make clean
-      - run: make buildall
+      - run: 
+        name: Build everything
+        command: |
+          make clean build
+          cd ../fc-retrieval-gateway 
+          make
       - run: make itest
 
   utest:
@@ -39,11 +58,9 @@ jobs:
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
+    working_directory: ~/project
     steps:
-      - checkout
-      - run: git submodule init
-      - run: git submodule update
+      - prepare
       - run: make utest
 
 workflows:

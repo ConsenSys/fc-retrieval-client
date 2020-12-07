@@ -1,4 +1,4 @@
-package client
+package net
 
 
 
@@ -16,7 +16,8 @@ const (
 	apiURL string = "http://gateway:80/client/establishment" 
 )
 
-func call(method string, args map[string]interface{}) (*simplejson.Json) {
+// GatewayCall calls the Gateway's REST API
+func GatewayCall(method string, args map[string]interface{}) (*simplejson.Json) {
 	args["protocol_version"] = "1"
 	args["protocol_supported"] = "1"
 	args["message_type"] = method
