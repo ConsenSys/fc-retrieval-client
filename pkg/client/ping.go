@@ -28,14 +28,13 @@ import (
 // GatewayPing sends "ping" message to gateway
 func (c *FilecoinRetrievalClient) gatewayPing(server string) (bool, error) {
 	if len(server) == 0 {
-		errors.New("Error: Cannot ping empty servername")
-	} else {
-		log.Println("Attempting to ping \"" + server + "\"")
-	}
+		return false, errors.New("Error: Cannot ping empty servername")
+	} 
+	log.Println("Attempting to ping \"" + server + "\"")
 
 	ra, err := net.ResolveIPAddr("ip4", server)
 	if err != nil {
-		errors.New("Error: Cannot ping empty servername")
+		return false, errors.New("Error: Cannot ping empty servername")
 	}
 	log.Printf("Resolved %s as %s\n", server, ra.String())
 
