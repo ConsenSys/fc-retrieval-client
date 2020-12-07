@@ -37,7 +37,7 @@ func (c *FilecoinRetrievalClient) gatewayPing(server string) (bool, error) {
 		return false, errors.New("Error: Cannot ping empty servername")
 	}
 	log.Printf("Resolved %s as %s\n", server, ra.String())
-
+ 
 
 
 	args := make(map[string]interface{})
