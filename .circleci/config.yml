@@ -36,7 +36,7 @@ commands:
 
 
 jobs:
-  release:
+  unitTests:
     executor: executor_med
     steps:
       - prepare
