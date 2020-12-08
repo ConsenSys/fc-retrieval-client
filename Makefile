@@ -26,7 +26,7 @@ utest:
 
 itest:
 	docker-compose down
-	docker-compose up
+	docker-compose up --abort-on-container-exit --exit-code-from client
 
 
 # remove previous images and containers
