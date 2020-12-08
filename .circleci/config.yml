@@ -22,8 +22,8 @@ jobs:
       - run: 
           name: "Git clone Client, Gateway, and Provider"
           command: |
-              git clone https://github.com/ConsenSys/fc-retrieval-gateway/
-              git clone https://github.com/ConsenSys/fc-retrieval-provider/
+              git clone https://github.com/ConsenSys/fc-retrieval-gateway
+              git clone https://github.com/ConsenSys/fc-retrieval-provider
               git --git-dir=fc-retrieval-gateway/.git rev-parse HEAD
               git --git-dir=fc-retrieval-provider/.git rev-parse HEAD
           working_directory: /go/src/github.com/ConsenSys/
