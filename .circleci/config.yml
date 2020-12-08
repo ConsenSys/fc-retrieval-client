@@ -17,15 +17,15 @@ jobs:
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
     steps:
-      - checkout
-      - run: git submodule init
-      - run: git submodule update
+      - run: git clone --recurse-submodules https://github.com/ConsenSys/fc-retrieval-client/
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
-      - run: make clean
       - run: make buildall
-      - run: make itest
+      - run: 
+          name: Itegration Tests
+          command: make itest
+          no_output_timeout: 30s
 
   utest:
     docker:
