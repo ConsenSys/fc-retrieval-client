@@ -63,8 +63,6 @@ jobs:
     working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
     steps:
       - checkout
-      - run: git submodule init
-      - run: git submodule update
       - run: make utest
 
 workflows:
