@@ -24,6 +24,7 @@ jobs:
       - run: 
           name: Make Client
           command: make
+          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
       - run:
           name: Make Gateway
           command: make
