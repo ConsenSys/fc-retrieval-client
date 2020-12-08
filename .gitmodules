@@ -1,9 +1,0 @@
-[submodule "fc-retrieval-gateway"]
-	path = fc-retrieval-gateway
-	url = https://github.com/ConsenSys/fc-retrieval-gateway
-        branch = main
-[submodule "fc-retrieval-provider"]
-	path = fc-retrieval-provider
-	url = https://github.com/ConsenSys/fc-retrieval-provider
-        branch = main
-
