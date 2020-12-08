@@ -37,5 +37,5 @@ clean:
 	docker rmi -f "${REGISTRY}fc-retrieval-client:${VERSION}" || true
 
 # Alays assume these targets are out of date.
-.PHONY: release itest
+.PHONY: release
 
