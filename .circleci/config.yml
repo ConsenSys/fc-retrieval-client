@@ -17,9 +17,15 @@ jobs:
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
     steps:
+      # git clone the Client and change to the correct branch.
+      - checkout
       - run: 
           name: "Git clone Client, Gateway, and Provider"
-          command: git clone --recurse-submodules https://github.com/ConsenSys/fc-retrieval-client/
+          command: |
+              git clone https://github.com/ConsenSys/fc-retrieval-gateway/
+              git clone https://github.com/ConsenSys/fc-retrieval-provider/
+              git --git-dir=fc-retrieval-gateway/.git rev-parse HEAD
+              git --git-dir=fc-retrieval-provider/.git rev-parse HEAD
           working_directory: /go/src/github.com/ConsenSys/
       - setup_remote_docker:
           version: 19.03.13
@@ -29,14 +35,14 @@ jobs:
           command: |
               pwd
               ls -al
-          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/fc-retrieval-gateway/
+          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-gateway/
       - run: 
           name: Make Client
           command: make
       - run:
           name: Make Gateway
           command: make
-          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/fc-retrieval-gateway/
+          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-gateway/
       - run: 
           name: Itegration Tests
           command: make itest
