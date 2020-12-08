@@ -12,11 +12,6 @@ REGISTRY?=
 release: clean utest build itest 
 
 # builds a docker image that builds the app and packages it into a minimal docker image
-buildall:
-	docker build -t ${REGISTRY}fc-retrieval-client-builder .
-	docker run --rm ${REGISTRY}fc-retrieval-client-builder | docker build --pull -t "${REGISTRY}fc-retrieval-client:${VERSION}" -
-	cd fc-retrieval-gateway && $(MAKE) 
-
 build:
 	docker build -t ${REGISTRY}fc-retrieval-client-builder .
 	docker run --rm ${REGISTRY}fc-retrieval-client-builder | docker build --pull -t "${REGISTRY}fc-retrieval-client:${VERSION}" -
@@ -42,5 +37,5 @@ clean:
 	docker rmi -f "${REGISTRY}fc-retrieval-client:${VERSION}" || true
 
 # Alays assume these targets are out of date.
-.PHONY: clean build release utest itest push
+.PHONY: release itest
 
