@@ -17,7 +17,10 @@ jobs:
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
     steps:
-      - run: git clone --recurse-submodules https://github.com/ConsenSys/fc-retrieval-client/
+      - run: 
+          name: "Git clone Client, Gateway, and Provider"
+          command: git clone --recurse-submodules https://github.com/ConsenSys/fc-retrieval-client/
+          working_directory: /go/src/github.com/ConsenSys/
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
@@ -26,11 +29,9 @@ jobs:
           command: |
               pwd
               ls -al
-          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
       - run: 
           name: Make Client
           command: make
-          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
       - run:
           name: Make Gateway
           command: make
