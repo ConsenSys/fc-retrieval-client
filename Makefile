@@ -9,7 +9,7 @@ REGISTRY?=
 
 # This target (the first target in the build file) is the one that is executed if no 
 # command line args are specified.
-release: clean utest build itest 
+release: clean utest build
 
 # builds a docker image that builds the app and packages it into a minimal docker image
 build:
@@ -37,5 +37,5 @@ clean:
 	docker rmi -f "${REGISTRY}fc-retrieval-client:${VERSION}" || true
 
 # Alays assume these targets are out of date.
-.PHONY: release
+.PHONY: clean itest utest build release push
 
