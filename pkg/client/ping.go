@@ -42,10 +42,10 @@ func (c *FilecoinRetrievalClient) gatewayPing(server string) (bool, error) {
 
 	args := make(map[string]interface{})
 	// TODO have a random challenge
-	args["challenge"] = "123456789"
-	args["ttl"] = "100"
+	args["challenge"] = "1234567890123456789"
+	args["ttl"] = int64(100)
 
-	res := network.GatewayCall("establishment", args).Get("result").MustString()
+	res := network.GatewayCall(0, args).Get("result").MustString()
 	log.Printf("Response from server: %s\n", res)
 
 	return true, nil

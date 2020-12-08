@@ -17,9 +17,9 @@ const (
 )
 
 // GatewayCall calls the Gateway's REST API
-func GatewayCall(method string, args map[string]interface{}) (*simplejson.Json) {
-	args["protocol_version"] = "1"
-	args["protocol_supported"] = "1"
+func GatewayCall(method int32, args map[string]interface{}) (*simplejson.Json) {
+	args["protocol_version"] = int32(1)
+	args["protocol_supported"] = []int32{1}
 	args["message_type"] = method
 	mJSON, _ := json.Marshal(args)
 	log.Printf("JSON sent: %s", mJSON)
