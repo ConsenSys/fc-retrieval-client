@@ -29,13 +29,14 @@ jobs:
           command: |
               pwd
               ls -al
+          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/fc-retrieval-gateway/
       - run: 
           name: Make Client
           command: make
       - run:
           name: Make Gateway
           command: make
-          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/fc-retrieval-gateway
+          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/fc-retrieval-gateway/
       - run: 
           name: Itegration Tests
           command: make itest
