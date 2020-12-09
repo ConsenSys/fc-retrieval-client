@@ -41,7 +41,7 @@ jobs:
                 echo 1
                 git --git-dir=fc-retrieval-provider/.git branch -r
                 echo 1a
-                git --git-dir=fc-retrieval-provider/.git branch -r | grep "$CIRCLE_BRANCH"
+                git --git-dir=fc-retrieval-provider/.git branch -r | grep ping2
                 echo 1b
                 existed_in_local2=$(git --git-dir=fc-retrieval-provider/.git branch -r | grep "$CIRCLE_BRANCH")
                 echo 2
