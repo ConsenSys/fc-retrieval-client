@@ -37,7 +37,8 @@ jobs:
                   echo Gateway branch is "$CIRCLE_BRANCH"
                   git --git-dir=fc-retrieval-gateway/.git fetch
                   git --git-dir=fc-retrieval-gateway/.git checkout "$CIRCLE_BRANCH"
-                  git --git-dir=fc-retrieval-gateway/.git pull
+                  head=$(git --git-dir=fc-retrieval-gateway/.git rev-parse HEAD)
+                  git --git-dir=fc-retrieval-gateway/.git reset --hard "$head"
                 fi
                 existed_in_local2=$(git --git-dir=fc-retrieval-provider/.git branch -r --list origin/"$CIRCLE_BRANCH")
                 if [ -z "$existed_in_local2" ]; then 
