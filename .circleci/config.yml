@@ -31,23 +31,25 @@ jobs:
                 echo Gateway branch and Provider branch are main
               else 
                 echo 1
-                git --git-dir=fc-retrieval-gateway/.git branch --list "$CIRCLE_BRANCH"
+                git --git-dir=fc-retrieval-gateway/.git remote show origin
                 echo 2
-                git --git-dir=fc-retrieval-gateway/.git branch --list 
-                existed_in_local1=$(git --git-dir=fc-retrieval-gateway/.git branch --list "$CIRCLE_BRANCH")
+                git --git-dir=fc-retrieval-gateway/.git remote show origin | grep "$CIRCLE_BRANCH"
+                existed_in_local1=$(git --git-dir=fc-retrieval-gateway/.git remote show origin | grep "$CIRCLE_BRANCH")
                 echo existed_in_local1 "$existed_in_local1"
                 if [ -z "$existed_in_local1" ]; then 
                   echo Gateway branch is main
                 else 
                   echo Gateway branch is "$CIRCLE_BRANCH"
+                  git --git-dir=fc-retrieval-gateway/.git fetch
                   git --git-dir=fc-retrieval-gateway/.git checkout "$CIRCLE_BRANCH"
                 fi
-                existed_in_local2=$(git --git-dir=fc-retrieval-provider/.git branch --list "$CIRCLE_BRANCH")
+                existed_in_local2=$(git --git-dir=fc-retrieval-provider/.git remote show origin | grep "$CIRCLE_BRANCH")
                 echo existed_in_local2 "$existed_in_local2"
                 if [ -z "$existed_in_local2" ]; then 
                   echo Provider branch is main
                 else
                   echo Provider branch is "$CIRCLE_BRANCH"
+                  git --git-dir=fc-retrieval-provider/.git fetch
                   git --git-dir=fc-retrieval-provider/.git checkout "$CIRCLE_BRANCH"
                 fi
               fi
