@@ -66,6 +66,7 @@ jobs:
               pwd
               ls -al
               git branch -a 
+              cat Makefile
           working_directory: /go/src/github.com/ConsenSys/fc-retrieval-gateway/
       - run: 
           name: Itegration Tests
