@@ -28,26 +28,24 @@ jobs:
               git clone https://github.com/ConsenSys/fc-retrieval-provider
               echo Circle Branch "$CIRCLE_BRANCH"
               if [ -z "$CIRCLE_BRANCH" ]; then
-                echo Gateway branch and Provider branch are main
+                echo Gateway and Provider repos are using main
               else 
-                echo 1
-                git --git-dir=fc-retrieval-gateway/.git branch -r
-                echo 2
-                git --git-dir=fc-retrieval-gateway/.git branch -r | grep "$CIRCLE_BRANCH"
                 existed_in_local1=$(git --git-dir=fc-retrieval-gateway/.git branch -r | grep "$CIRCLE_BRANCH")
                 echo existed_in_local1 "$existed_in_local1"
                 if [ -z "$existed_in_local1" ]; then 
-                  echo Gateway branch is main
+                  echo Gateway repo branch is main
                 else 
                   echo Gateway branch is "$CIRCLE_BRANCH"
-                  echo git --git-dir=fc-retrieval-gateway/.git fetch
                   git --git-dir=fc-retrieval-gateway/.git fetch
                   git --git-dir=fc-retrieval-gateway/.git checkout "$CIRCLE_BRANCH"
                 fi
+                echo 1
                 existed_in_local2=$(git --git-dir=fc-retrieval-provider/.git branch -r | grep "$CIRCLE_BRANCH")
+                echo 2
                 echo existed_in_local2 "$existed_in_local2"
+                echo 3
                 if [ -z "$existed_in_local2" ]; then 
-                  echo Provider branch is main
+                  echo Provider repo branch is main
                 else
                   echo Provider branch is "$CIRCLE_BRANCH"
                   git --git-dir=fc-retrieval-provider/.git fetch
