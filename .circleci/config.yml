@@ -30,6 +30,9 @@ jobs:
               if [ -z "$CIRCLE_BRANCH" ]; then
                 echo Gateway and Provider repos are using main
               else 
+                echo 5a
+                git --git-dir=fc-retrieval-gateway/.git branch -r --list origin/"$CIRCLE_BRANCH"
+                echo 6b
                 existed_in_local1=$(git --git-dir=fc-retrieval-gateway/.git branch -r | grep "$CIRCLE_BRANCH")
                 if [ -z "$existed_in_local1" ]; then 
                   echo Gateway repo branch is main
@@ -41,7 +44,7 @@ jobs:
                 echo 1
                 git --git-dir=fc-retrieval-provider/.git branch -r
                 echo 1a
-                git --git-dir=fc-retrieval-provider/.git branch -r | grep ping2
+                git --git-dir=fc-retrieval-provider/.git branch -r --list origin/"$CIRCLE_BRANCH"
                 echo 1b
                 existed_in_local2=$(git --git-dir=fc-retrieval-provider/.git branch -r | grep "$CIRCLE_BRANCH")
                 echo 2
