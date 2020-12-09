@@ -27,7 +27,7 @@ jobs:
               git clone https://github.com/ConsenSys/fc-retrieval-gateway
               git clone https://github.com/ConsenSys/fc-retrieval-provider
               echo Circle Branch "$CIRCLE_BRANCH"
-              if [ -z "$CIRCLE_BRANCH" ]
+              if [ -z "$CIRCLE_BRANCH" ]; then
                 echo Gateway and Provider branch is main
               else 
                 existed_in_local1=$(git --git-dir=fc-retrieval-gateway/.git branch --list "$CIRCLE_BRANCH")
