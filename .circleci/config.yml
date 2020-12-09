@@ -22,37 +22,49 @@ jobs:
       # git clone the Gateway and Provider and switch to a branch which matches the 
       # name of the branch on the Client repo. If no such branch exists, just use main
       - run: 
-          name: "Git clone Client, Gateway, and Provider"
+          name: "Git clone Gateway, and Provider"
           command: |
               git clone https://github.com/ConsenSys/fc-retrieval-gateway
               git clone https://github.com/ConsenSys/fc-retrieval-provider
+          working_directory: /go/src/github.com/ConsenSys/
+      - run: 
+          name: "Git get correct branch for Gateway"
+          #head=$(git --git-dir=fc-retrieval-gateway/.git rev-parse HEAD)
+          #git --git-dir=fc-retrieval-gateway/.git reset --hard "$head"
+          command: |
               echo Circle Branch "$CIRCLE_BRANCH"
               if [ -z "$CIRCLE_BRANCH" ]; then
-                echo Gateway and Provider repos are using main
+                echo Gateway repos is using main
               else 
-                existed_in_local1=$(git --git-dir=fc-retrieval-gateway/.git branch -r --list origin/"$CIRCLE_BRANCH")
+                existed_in_local1=$(git branch -r --list origin/"$CIRCLE_BRANCH")
                 if [ -z "$existed_in_local1" ]; then 
                   echo Gateway repo branch is main
                 else 
                   echo Gateway branch is "$CIRCLE_BRANCH"
-                  git --git-dir=fc-retrieval-gateway/.git fetch
-                  git --git-dir=fc-retrieval-gateway/.git checkout "$CIRCLE_BRANCH"
-                  head=$(git --git-dir=fc-retrieval-gateway/.git rev-parse HEAD)
-                  git --git-dir=fc-retrieval-gateway/.git reset --hard "$head"
+                  git fetch
+                  git "$CIRCLE_BRANCH"
                 fi
-                existed_in_local2=$(git --git-dir=fc-retrieval-provider/.git branch -r --list origin/"$CIRCLE_BRANCH")
+              fi
+              git rev-parse HEAD
+          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-gateway
+      - run: 
+          name: "Git get correct branch for Provider"
+          command: |
+              echo Circle Branch "$CIRCLE_BRANCH"
+              if [ -z "$CIRCLE_BRANCH" ]; then
+                echo Provider repos is using main
+              else 
+                existed_in_local2=$(git branch -r --list origin/"$CIRCLE_BRANCH")
                 if [ -z "$existed_in_local2" ]; then 
                   echo Provider repo branch is main
                 else
                   echo Provider branch is "$CIRCLE_BRANCH"
-                  git --git-dir=fc-retrieval-provider/.git fetch
-                  git --git-dir=fc-retrieval-provider/.git checkout "$CIRCLE_BRANCH"
-                  git --git-dir=fc-retrieval-provider/.git pull
+                  git fetch
+                  git checkout "$CIRCLE_BRANCH"
                 fi
               fi
-              git --git-dir=fc-retrieval-gateway/.git rev-parse HEAD
-              git --git-dir=fc-retrieval-provider/.git rev-parse HEAD
-          working_directory: /go/src/github.com/ConsenSys/
+              git rev-parse HEAD
+          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-provider
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
