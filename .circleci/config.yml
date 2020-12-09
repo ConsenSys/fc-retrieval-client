@@ -54,17 +54,18 @@ jobs:
           version: 19.03.13
           docker_layer_caching: true
       - run: 
-          name: Look for make file!
-          command: |
-              pwd
-              ls -al
-          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-gateway/
-      - run: 
           name: Make Client
           command: make
       - run:
           name: Make Gateway
           command: make
+          working_directory: /go/src/github.com/ConsenSys/fc-retrieval-gateway/
+      - run: 
+          name: What branch is the gateway on!
+          command: |
+              pwd
+              ls -al
+              git branch -a 
           working_directory: /go/src/github.com/ConsenSys/fc-retrieval-gateway/
       - run: 
           name: Itegration Tests
