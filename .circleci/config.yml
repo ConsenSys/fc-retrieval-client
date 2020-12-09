@@ -28,11 +28,11 @@ jobs:
               git clone https://github.com/ConsenSys/fc-retrieval-provider
               existed_in_local1=$(git --git-dir=fc-retrieval-gateway/.git branch --list "$CIRCLE_BRANCH")
               if [ -n "$existed_in_local1" ]; then 
-                git --git-dir=fc-retrieval-gateway/.git checkout "$CIRCLE_BRANCH")
+                git --git-dir=fc-retrieval-gateway/.git checkout "$CIRCLE_BRANCH"
               fi
               existed_in_local2=$(git --git-dir=fc-retrieval-provider/.git branch --list "$CIRCLE_BRANCH")
               if [ -n "$existed_in_local2" ]; then 
-                git --git-dir=fc-retrieval-provider/.git checkout "$CIRCLE_BRANCH")
+                git --git-dir=fc-retrieval-provider/.git checkout "$CIRCLE_BRANCH"
               fi
               git --git-dir=fc-retrieval-gateway/.git rev-parse HEAD
               git --git-dir=fc-retrieval-provider/.git rev-parse HEAD
