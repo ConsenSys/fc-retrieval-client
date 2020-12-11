@@ -23,11 +23,11 @@ import (
 )
 
 // GatewayClientEstablishment sends a GatewayClientEstablishmentRequest and processes a response.
-func (g *Comms) GatewayClientEstablishment(ttl int64, challenge []byte) (bool, error) {
+func (g *Comms) GatewayClientEstablishment(ttl int64, challenge [32]byte) (bool, error) {
  	args := make(map[string]interface{})
 
 	b := make([]byte, base64.StdEncoding.EncodedLen(len(challenge)))
-	base64.StdEncoding.Encode(b, challenge)
+	base64.StdEncoding.Encode(b, challenge[:])
 	args["challenge"] = string(b)
 	args["ttl"] = ttl
 

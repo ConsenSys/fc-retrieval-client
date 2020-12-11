@@ -16,6 +16,8 @@ package fcrclient
  */
 
  import (
+	 "log"
+	 "encoding/hex"
 	"github.com/ConsenSys/fc-retrieval-client/internal/control"
 )
 
@@ -24,6 +26,7 @@ package fcrclient
 // the Filecoin Retrieval Client with Filecoin Retrieval Gateways.
 type FilecoinRetrievalClient struct {
 	gatewayManager *control.GatewayManager
+	verbose bool
 	// TODO have a list of gateway objects of all the current gateways being interacted with
 }
 
@@ -52,7 +55,12 @@ func GetFilecoinRetrievalClient() *FilecoinRetrievalClient {
 }
 
 func (c *FilecoinRetrievalClient) startUp(settings *FilecoinRetrievalClientSettings) {
-	gs := control.GatewayManagerSettings{MaxEstablishmentTTL: settings.MaxEstablishmentTTL}
+	c.verbose = settings.Verbose
+	if c.verbose {
+		log.Println("Filecoin Retrieval Client started")
+	}
+
+	gs := control.GatewayManagerSettings{MaxEstablishmentTTL: settings.MaxEstablishmentTTL, Verbose: settings.Verbose}
 	c.gatewayManager = control.GetGatewayManager(&gs)
 }
 
@@ -61,11 +69,23 @@ func (c *FilecoinRetrievalClient) startUp(settings *FilecoinRetrievalClientSetti
 
 // FindBestOffers locates offsers for supplying the content associated with the pieceCID
 func (c *FilecoinRetrievalClient) FindBestOffers(pieceCID [32]byte, maxPrice int64, maxExpectedLatency int64) ([]PieceCIDOffer){
+	var hexDumpPieceCID string
+	if (c.verbose) {
+		hexDumpPieceCID = hex.Dump(pieceCID[:])
+		log.Printf("Filecoin Retrieval Client: FindBestOffers(pieceCID: %s, maxPrice: %d, maxExpectedLatency: %d", 
+		hexDumpPieceCID, maxPrice, maxExpectedLatency)
+	}
 	// TODO
+	if (c.verbose) {
+		log.Printf("Filecoin Retrieval Client: FindBestOffers(pieceCID: %s) returning no offers", hexDumpPieceCID)
+	}
 	return nil
 }
 
 // Shutdown releases all resources used by the library
 func (c *FilecoinRetrievalClient) Shutdown() {
+	if (c.verbose) {
+		log.Println("Filecoin Retrieval Client shutting down")
+	}
 	c.gatewayManager.Shutdown()
 }

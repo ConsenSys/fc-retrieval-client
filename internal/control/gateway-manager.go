@@ -16,9 +16,12 @@ package control
  */
 
 import (
+	"log"
 	"sync"
 
 	"github.com/ConsenSys/fc-retrieval-client/internal/contracts"
+	"github.com/ConsenSys/fc-retrieval-client/internal/gatewayapi"
+	"github.com/ConsenSys/fc-retrieval-client/internal/prng"
 )
 
 // GatewayManager managers the pool of gateways and the connections to them.
@@ -26,11 +29,14 @@ type GatewayManager struct {
 	gatewayRegistrationContract *contracts.GatewayRegistrationContract 
 	gateways []ActiveGateway
 	gatewaysLock   sync.RWMutex
+	maxEstablishmentTTL int64
+	verbose bool
 }
 
 // ActiveGateway contains information for a single gateway
 type ActiveGateway struct {
 	info contracts.GatewayInformation
+	comms 		*gatewayapi.Comms
 
 }
 
@@ -38,6 +44,7 @@ type ActiveGateway struct {
 // Gateway Manager.
 type GatewayManagerSettings struct {
 	MaxEstablishmentTTL int64
+	Verbose bool
 }
 
 var doOnce sync.Once
@@ -58,6 +65,10 @@ func GetGatewayManager(settings ...*GatewayManagerSettings) *GatewayManager {
 
 func startGatewayManager(settings *GatewayManagerSettings) {
 	g := GatewayManager{}
+	g.verbose = settings.Verbose
+	g.maxEstablishmentTTL = settings.MaxEstablishmentTTL
+	g.gatewayRegistrationContract = contracts.GetGatewayRegistrationContract() 
+
 	singleInstance = &g
 
 //	errChan := make(chan error, 1)
@@ -68,11 +79,39 @@ func startGatewayManager(settings *GatewayManagerSettings) {
 }
 
 func (g *GatewayManager) gatewayManagerRunner() {
-	contracts.GetGatewayRegistrationContract() 
+	// Call this once each hour or maybe day.
+	g.gatewayRegistrationContract.FetchUpdatedInformationFromContract()
 
+	// TODO this loop is where the managing of gateways that the client is using
+	// happens.
+
+	// TODO given we are using dummy data, just grab the gateway information once.
+	gatewayInfo := g.gatewayRegistrationContract.GetGateways(10)
+	if (g.verbose) {
+		log.Printf("Gateway Manager: GetGateways returned %d gateways", len(gatewayInfo))
+	}
+	for _, info := range gatewayInfo {
+		comms, err := gatewayapi.NewGatewayAPIComms(info.Hostname)
+		if err != nil {
+			panic(err)
+		} 
+
+		// Try to do the establishment with the new gateway
+		var challenge [32]byte
+		prng.GenerateRandomBytes(challenge[:])
+		comms.GatewayClientEstablishment(g.maxEstablishmentTTL, challenge)
+
+		activeGateway := ActiveGateway{info, comms}
+		g.gateways = append(g.gateways, activeGateway)
+	}
+
+
+
+
+	if (g.verbose) {
+		log.Printf("Gateway Manager using %d gateways", len(g.gateways))
+	}
 	
-
-	// TODO read gateway information from the smart contracts
 }
 
 // BlockGateway adds a host to disallowed list of gateways

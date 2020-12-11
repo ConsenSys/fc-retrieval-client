@@ -69,6 +69,11 @@ func (g *GatewayRegistrationContract) createDummyData() {
 	g.gateways = append(g.gateways, gi)
 }
 
+// FetchUpdatedInformationFromContract downloads updated informaiton from the contract.
+func (g *GatewayRegistrationContract) FetchUpdatedInformationFromContract() {
+	// TODO For the moment do nothing.
+}
+
 // GetGateways returns gateway information based on the locaiton parameters
 func (g *GatewayRegistrationContract) GetGateways(maxToReturn int32, loc ...string) []GatewayInformation {
 	len := len(loc)
