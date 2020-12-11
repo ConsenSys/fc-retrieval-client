@@ -14,6 +14,9 @@ package contracts
  * SPDX-License-Identifier: Apache-2.0
  */
 
+ import (
+	 "sync"
+ )
 
  
 /*
@@ -29,13 +32,13 @@ type GatewayRegistrationContract struct {
 
 // GatewayInformation holds information about a single gateway.
 type GatewayInformation struct {
-	GatewayID *big.Int
+	GatewayID [32]byte
 	Hostname string
 	Location *LocationInfo
 	// TODO public key?
 }
 
-// Information about the location of a gateway
+// LocationInfo contains information about the location of a gateway
 type LocationInfo struct {
 	RegionCode string
 	CountryCode string
@@ -50,52 +53,57 @@ var noGateways []GatewayInformation
 // gateway registration contract.
 func GetGatewayRegistrationContract() *GatewayRegistrationContract {
     doOnce.Do(func() {
-		g = GatewayRegistrationContract
-		createDummyData()
+		g := GatewayRegistrationContract{}
+		g.createDummyData()
 		singleInstance = &g
 	})
 	return singleInstance
 }
 
 func (g *GatewayRegistrationContract) createDummyData() {
-	l = LocationInfo{RegionCode: "A", CountryCode: "AU", SubDivisionCode: "AU-QLD"}
-	gi = GatewayInformation{GatewayID: big.NewInt(1), Hostname: "gateway", Location: &l)
-	append(g.gateways, gi)
+	l := LocationInfo{RegionCode: "A", CountryCode: "AU", SubDivisionCode: "AU-QLD"}
+	var dummyGatewayID [32]byte
+	dummyGatewayID[0] = 0x12
+	gi := GatewayInformation{GatewayID: dummyGatewayID, Hostname: "gateway", Location: &l}
+
+	g.gateways = append(g.gateways, gi)
 }
 
-// GetGateways returns gateways anywhere in the world
-func (g *GatewayRegistrationContract) GetGateways(maxToReturn int32) *[]GatewayInformation {
-	// TODO handle num == 0
-
-	return g.gateways
-}
-
-// GetGateways returns gateways that match the region code
-func (g *GatewayRegistrationContract) GetGateways(maxToReturn int32, regionCode string) *[]GatewayInformation {
-	// TODO handle num == 0
-	if regionCode != "A" {
-		return noGateways
+// GetGateways returns gateway information based on the locaiton parameters
+func (g *GatewayRegistrationContract) GetGateways(maxToReturn int32, loc ...string) []GatewayInformation {
+	len := len(loc)
+	switch len {
+	case 0:
+		// TODO only return up to maxToReturn
+		return g.gateways
+	case 1:
+		regionCode := loc[0]
+		// TODO only return up to maxToReturn
+		// TODO this assumes the hard coded data
+		if regionCode != "A" {
+			return noGateways
+		}
+		return g.gateways
+	case 2:
+		regionCode := loc[0]
+		countryCode := loc[1]
+		// TODO only return up to maxToReturn
+		// TODO this assumes the hard coded data
+		if regionCode != "A" || countryCode != "AU" {
+			return noGateways
+		}
+		return g.gateways
+	case 3:
+		regionCode := loc[0]
+		countryCode := loc[1]
+		subdivisionCode := loc[2]
+		// TODO only return up to maxToReturn
+		// TODO this assumes the hard coded data
+		if regionCode != "A" || countryCode != "AU" || subdivisionCode != "AU-QLD" {
+			return noGateways
+		}
+		return g.gateways
+	default:
+		panic("Invalid number of parameters to contract.GetGateways")
 	}
-
-	return g.gateways
-}
-
-// GetGateways returns gateways that match the region code and the country code
-func (g *GatewayRegistrationContract) GetGateways(maxToReturn int32, regionCode string, countryCode string) *[]GatewayInformation {
-	// TODO handle num == 0
-	if regionCode != "A" || countryCode != "AU" {
-		return noGateways
-	}
-
-	return g.gateways
-}
-
-// GetGateways returns gateways that match the precise location
-func (g *GatewayRegistrationContract) GetGateways(maxToReturn int32, regionCode string, countryCode string, subdivisionCode string) *[]GatewayInformation {
-	// TODO handle num == 0
-	if regionCode != "A" || countryCode != "AU" || subdivisionCode != "AU-QLD" {
-		return noGateways
-	}
-
-	return g.gateways
 }
