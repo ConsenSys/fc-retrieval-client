@@ -72,13 +72,19 @@ func startGatewayManager(settings *GatewayManagerSettings) {
 	singleInstance = &g
 
 //	errChan := make(chan error, 1)
-	go g.gatewayManagerRunner()
+//	go g.gatewayManagerRunner()
+	g.gatewayManagerRunner()
 
 	// TODO what should be done with error that is returned possibly in the future?
 	// TODO would it be better just to have gatewayManagerRunner panic after emitting a log?
 }
 
 func (g *GatewayManager) gatewayManagerRunner() {
+	if (g.verbose) {
+		log.Printf("Gateway Manager: Management thread started")
+	}
+
+
 	// Call this once each hour or maybe day.
 	g.gatewayRegistrationContract.FetchUpdatedInformationFromContract()
 
