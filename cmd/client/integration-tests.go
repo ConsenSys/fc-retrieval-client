@@ -29,8 +29,8 @@ func main() {
 }
 
 func integrationTests() {
-	log.Println(" Wait one second for the gateway to deploy and be ready for requests")
-	time.Sleep(time.Second)
+	log.Println(" Wait two seconds for the gateway to deploy and be ready for requests")
+	time.Sleep(2 * time.Second)
 
 	var pieceCIDToFind [32]byte
 
