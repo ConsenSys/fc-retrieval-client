@@ -1,4 +1,4 @@
-package client
+package netdbg
 
 /*
  * Copyright 2020 ConsenSys Software Inc.

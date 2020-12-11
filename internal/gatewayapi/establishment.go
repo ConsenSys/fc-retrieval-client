@@ -1,4 +1,4 @@
-package main
+package gatewayapi
 
 /*
  * Copyright 2020 ConsenSys Software Inc.
@@ -17,26 +17,23 @@ package main
 
 import (
 	"log"
-	"time"
+	"encoding/base64"
 
-	"github.com/ConsenSys/fc-retrieval-client/pkg/fcrclient"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/messages"
 )
 
-func main() {
-	log.Println("Integration Test: Start")
-	integrationTests()
-	log.Println("Integration Test: End")
+// GatewayClientEstablishment sends a GatewayClientEstablishmentRequest and processes a response.
+func (g *Comms) GatewayClientEstablishment(ttl int64, challenge []byte) (bool, error) {
+ 	args := make(map[string]interface{})
+
+	b := make([]byte, base64.StdEncoding.EncodedLen(len(challenge)))
+	base64.StdEncoding.Encode(b, challenge)
+	args["challenge"] = string(b)
+	args["ttl"] = ttl
+
+	res := g.gatewayCall(messages.ClientEstablishmentRequestType, args).Get("result").MustString()
+	log.Printf("Response from server: %s\n", res)
+
+	return true, nil
 }
 
-func integrationTests() {
-	log.Println(" Wait one second for the gateway to deploy and be ready for requests")
-	time.Sleep(time.Second)
-
-	var pieceCIDToFind [32]byte
-
-	settings := fcrclient.FilecoinRetrievalClientSettings{Verbose: true}
-	client := fcrclient.InitFilecoinRetrievalClient(&settings)
-	offers := client.FindBestOffers(pieceCIDToFind, 1000, 1000)
-	log.Printf("Offers: %+v\n", offers)
-	client.Shutdown()
-}
