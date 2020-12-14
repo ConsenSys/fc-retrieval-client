@@ -57,7 +57,9 @@ var singleInstance *GatewayManager
 func GetGatewayManager(settings ...*GatewayManagerSettings) *GatewayManager {
     doOnce.Do(func() {
 		if len(settings) != 1 {
-			logging.ErrorAndPanic("Unexpected number of parameter passed to first call of GetGatewayManager")
+			// TODO replace with ErrorAndPanic once available
+			logging.Error("Unexpected number of parameter passed to first call of GetGatewayManager")
+			panic("Unexpected number of parameter passed to first call of GetGatewayManager")
 		}
 		startGatewayManager(settings[0])
 	})
