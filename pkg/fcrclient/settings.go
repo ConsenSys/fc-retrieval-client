@@ -6,30 +6,26 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"math/big"
 
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 )
 
 const (
 	defaultSettingsFileName = "fcrsettings.json"
-	defaultSettingsFile = "/etc/client/" + defaultSettingsFileName
-	
-	defaultSettingsVerbose = true
+	defaultSettingsFile     = "/etc/client/" + defaultSettingsFileName
+
+	defaultSettingsVerbose     = true
 	defaultMaxEstablishmentTTL = int64(100)
 )
 
 // FilecoinRetrievalClientSettings holds the library configuration
 type FilecoinRetrievalClientSettings struct {
-	MaxEstablishmentTTL int64 
-	Verbose bool       // If true, then more logging is shown.
-	NodeID *nodeid.NodeID
+	MaxEstablishmentTTL int64
+	Verbose             bool // If true, then more logging is shown.
+	NodeID              *nodeid.NodeID
 }
 
 var settings *FilecoinRetrievalClientSettings
-
-
-
 
 // LoadSettings loads the app settings from the settings file.
 func LoadSettings(settingsFile ...string) (*FilecoinRetrievalClientSettings, error) {
@@ -47,10 +43,6 @@ func LoadSettings(settingsFile ...string) (*FilecoinRetrievalClientSettings, err
 	if err != nil {
 		log.Printf("Failed to read settings file: %s: %s", configFile, err.Error())
 	}
-
-	// TODO handle node ID
-	nodeID := nodeid.NewNodeID(big.NewInt(7))
-	settings.NodeID = nodeID
 
 	if settings.Verbose {
 		log.Printf("Filecoin Retrieval Client settings: (%+v)\n", settings)

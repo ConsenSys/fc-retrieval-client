@@ -16,9 +16,12 @@ package fcrclient
  */
 
  import (
-	 "log"
-	 "encoding/hex"
+	"log"
+	"encoding/hex"
+	
 	"github.com/ConsenSys/fc-retrieval-client/internal/control"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+
 )
 
 
@@ -57,7 +60,7 @@ func GetFilecoinRetrievalClient() *FilecoinRetrievalClient {
 func (c *FilecoinRetrievalClient) startUp(settings *FilecoinRetrievalClientSettings) {
 	c.verbose = settings.Verbose
 	if c.verbose {
-		log.Println("Filecoin Retrieval Client started")
+		logging.Info("Filecoin Retrieval Client started")
 	}
 
 	gs := control.GatewayManagerSettings{MaxEstablishmentTTL: settings.MaxEstablishmentTTL, Verbose: settings.Verbose, NodeID: settings.NodeID}

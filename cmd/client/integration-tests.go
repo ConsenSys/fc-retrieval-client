@@ -18,6 +18,9 @@ package main
 import (
 	"log"
 	"time"
+	"math/big"
+
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 
 	"github.com/ConsenSys/fc-retrieval-client/pkg/fcrclient"
 )
@@ -34,7 +37,12 @@ func integrationTests() {
 
 	var pieceCIDToFind [32]byte
 
-	settings := fcrclient.FilecoinRetrievalClientSettings{Verbose: true}
+	// TODO remove this and handle node ID
+	nodeID, err := nodeid.NewNodeID(big.NewInt(7))
+	if err != nil {
+		panic(err)
+	}
+	settings := fcrclient.FilecoinRetrievalClientSettings{MaxEstablishmentTTL: 100, Verbose: true, NodeID: nodeID}
 	client := fcrclient.InitFilecoinRetrievalClient(&settings)
 	offers := client.FindBestOffers(pieceCIDToFind, 1000, 1000)
 	log.Printf("Offers: %+v\n", offers)
