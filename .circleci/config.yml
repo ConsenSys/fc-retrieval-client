@@ -87,6 +87,9 @@ jobs:
           name: Itegration Tests
           command: make itest
           no_output_timeout: 30s
+      - run:
+          name: Display Gateway Container Log
+          command: docker container logs gateway
 
   utest:
     docker:
