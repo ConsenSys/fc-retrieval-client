@@ -23,6 +23,7 @@ import (
 	"github.com/ConsenSys/fc-retrieval-client/internal/gatewayapi"
 	"github.com/ConsenSys/fc-retrieval-client/internal/prng"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 )
 
 // GatewayManager managers the pool of gateways and the connections to them.
@@ -31,6 +32,7 @@ type GatewayManager struct {
 	gateways []ActiveGateway
 	gatewaysLock   sync.RWMutex
 	maxEstablishmentTTL int64
+	nodeID *nodeid.NodeID
 	verbose bool
 }
 
@@ -45,6 +47,7 @@ type ActiveGateway struct {
 // Gateway Manager.
 type GatewayManagerSettings struct {
 	MaxEstablishmentTTL int64
+	NodeID *nodeid.NodeID
 	Verbose bool
 }
 
@@ -71,6 +74,7 @@ func startGatewayManager(settings *GatewayManagerSettings) {
 	g.verbose = settings.Verbose
 	g.maxEstablishmentTTL = settings.MaxEstablishmentTTL
 	g.gatewayRegistrationContract = contracts.GetGatewayRegistrationContract() 
+	g.nodeID = settings.NodeID
 
 	singleInstance = &g
 
@@ -100,7 +104,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 		log.Printf("Gateway Manager: GetGateways returned %d gateways", len(gatewayInfo))
 	}
 	for _, info := range gatewayInfo {
-		comms, err := gatewayapi.NewGatewayAPIComms(info.Hostname)
+		comms, err := gatewayapi.NewGatewayAPIComms(info.Hostname, g.nodeID)
 		if err != nil {
 			panic(err)
 		} 

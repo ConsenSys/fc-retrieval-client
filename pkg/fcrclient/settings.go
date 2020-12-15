@@ -1,10 +1,14 @@
 package fcrclient
+
 // Copyright (C) 2020 ConsenSys Software Inc
 
 import (
-	"log"
-	"io/ioutil"
 	"encoding/json"
+	"io/ioutil"
+	"log"
+	"math/big"
+
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 )
 
 const (
@@ -19,13 +23,10 @@ const (
 type FilecoinRetrievalClientSettings struct {
 	MaxEstablishmentTTL int64 
 	Verbose bool       // If true, then more logging is shown.
+	NodeID *nodeid.NodeID
 }
 
-var defaults = FilecoinRetrievalClientSettings{
-	defaultMaxEstablishmentTTL,
-	defaultSettingsVerbose}
-
-var settings = &defaults
+var settings *FilecoinRetrievalClientSettings
 
 
 
@@ -46,6 +47,10 @@ func LoadSettings(settingsFile ...string) (*FilecoinRetrievalClientSettings, err
 	if err != nil {
 		log.Printf("Failed to read settings file: %s: %s", configFile, err.Error())
 	}
+
+	// TODO handle node ID
+	nodeID := nodeid.NewNodeID(big.NewInt(7))
+	settings.NodeID = nodeID
 
 	if settings.Verbose {
 		log.Printf("Filecoin Retrieval Client settings: (%+v)\n", settings)

@@ -60,7 +60,7 @@ func (c *FilecoinRetrievalClient) startUp(settings *FilecoinRetrievalClientSetti
 		log.Println("Filecoin Retrieval Client started")
 	}
 
-	gs := control.GatewayManagerSettings{MaxEstablishmentTTL: settings.MaxEstablishmentTTL, Verbose: settings.Verbose}
+	gs := control.GatewayManagerSettings{MaxEstablishmentTTL: settings.MaxEstablishmentTTL, Verbose: settings.Verbose, NodeID: settings.NodeID}
 	c.gatewayManager = control.GetGatewayManager(&gs)
 }
 

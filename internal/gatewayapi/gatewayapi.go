@@ -1,17 +1,17 @@
 package gatewayapi
 
-
-
 import (
-	"github.com/bitly/go-simplejson"
-	"log"
-	"encoding/json"
 	"bytes"
+	"encoding/json"
 	"errors"
+	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
-	"io/ioutil"
-    //"fmt"
+
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
+	"github.com/bitly/go-simplejson"
+	//"fmt"
 )
 
 const (
@@ -34,10 +34,11 @@ var clientAPIProtocolSupported []int
 // Comms holds the communications specific data
 type Comms struct {
 	apiURL string
+	nodeID *nodeid.NodeID
 }
 
 // NewGatewayAPIComms creates a connection with a gateway
-func NewGatewayAPIComms(host string) (*Comms, error){
+func NewGatewayAPIComms(host string, nodeID *nodeid.NodeID) (*Comms, error){
 	// Create the constant array.
 	if (clientAPIProtocolSupported == nil) {
 		clientAPIProtocolSupported = make([]int, 1)
@@ -53,6 +54,7 @@ func NewGatewayAPIComms(host string) (*Comms, error){
 
 	netComms := Comms{}
 	netComms.apiURL = apiURLStart + host + apiURLEnd
+	netComms.nodeID = nodeID
 	return &netComms, nil
 }
 
@@ -61,6 +63,7 @@ func (n *Comms) gatewayCall(method int32, args map[string]interface{}) (*simplej
 	args["protocol_version"] = int32(1)
 	args["protocol_supported"] = []int32{1}
 	args["message_type"] = method
+	args["node_id"] = n.nodeID.ToString()
 	mJSON, _ := json.Marshal(args)
 	log.Printf("JSON sent: %s", mJSON)
 	contentReader := bytes.NewReader(mJSON)
