@@ -16,6 +16,8 @@ COPY Dockerfile.run /go/bin/Dockerfile
 # can be accessed by the runtime Dockerfile.
 COPY settings.json /go/bin/settings.json
 
+# Remove any cached dependancies. TODO is this really needed?
+RUN go clean -modcache
 # Get all dependancies, but don't install.
 RUN go get -d -v github.com/ConsenSys/fc-retrieval-client/cmd/client
 # Do a full compile of app and dependancies, forcing static linking.
