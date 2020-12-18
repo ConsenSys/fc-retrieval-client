@@ -16,41 +16,42 @@ package netdbg
  */
 
 import (
-	"log"
 	"net"
 	"os"
 	"time"
 
 	"github.com/tatsushid/go-fastping"
+
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
 )
 
 // Ping pings a remote server via ICMP
 func Ping(pingserver string) bool {
 
 	if len(pingserver) == 0 {
-		log.Println("Error: Cannot ping empty servername")
+		logging.ErrorAndPanic("Error: Cannot ping empty servername")
 		os.Exit(1)
 	} else {
-		log.Println("Attempting to ping " + pingserver)
+		logging.Info("Attempting to ping %s", pingserver)
 	}
 
 	p := fastping.NewPinger()
 	p.Network("udp")
 	ra, err := net.ResolveIPAddr("ip4:icmp", pingserver)
 	if err != nil {
-		log.Println(err)
+		logging.Error1(err)
 		return false
 	}
 	p.AddIPAddr(ra)
 	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) {
-		log.Printf("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt)
+		logging.Info("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt)
 	}
 	p.OnIdle = func() {
-		log.Println("finish")
+		logging.Info("finish")
 	}
 	err = p.Run()
 	if err != nil {
-		log.Println(err)
+		logging.Error1(err)
 		return false
 	}
 	return true

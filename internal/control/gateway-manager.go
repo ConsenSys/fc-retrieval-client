@@ -16,7 +16,6 @@ package control
  */
 
 import (
-	"log"
 	"sync"
 
 	"github.com/ConsenSys/fc-retrieval-client/internal/contracts"
@@ -33,7 +32,6 @@ type GatewayManager struct {
 	gatewaysLock   sync.RWMutex
 	maxEstablishmentTTL int64
 	nodeID *nodeid.NodeID
-	verbose bool
 }
 
 // ActiveGateway contains information for a single gateway
@@ -48,7 +46,6 @@ type ActiveGateway struct {
 type GatewayManagerSettings struct {
 	MaxEstablishmentTTL int64
 	NodeID *nodeid.NodeID
-	Verbose bool
 }
 
 var doOnce sync.Once
@@ -61,8 +58,7 @@ func GetGatewayManager(settings ...*GatewayManagerSettings) *GatewayManager {
     doOnce.Do(func() {
 		if len(settings) != 1 {
 			// TODO replace with ErrorAndPanic once available
-			logging.Error("Unexpected number of parameter passed to first call of GetGatewayManager")
-			panic("Unexpected number of parameter passed to first call of GetGatewayManager")
+			logging.ErrorAndPanic("Unexpected number of parameter passed to first call of GetGatewayManager")
 		}
 		startGatewayManager(settings[0])
 	})
@@ -71,7 +67,6 @@ func GetGatewayManager(settings ...*GatewayManagerSettings) *GatewayManager {
 
 func startGatewayManager(settings *GatewayManagerSettings) {
 	g := GatewayManager{}
-	g.verbose = settings.Verbose
 	g.maxEstablishmentTTL = settings.MaxEstablishmentTTL
 	g.gatewayRegistrationContract = contracts.GetGatewayRegistrationContract() 
 	g.nodeID = settings.NodeID
@@ -87,9 +82,7 @@ func startGatewayManager(settings *GatewayManagerSettings) {
 }
 
 func (g *GatewayManager) gatewayManagerRunner() {
-	if (g.verbose) {
-		log.Printf("Gateway Manager: Management thread started")
-	}
+	logging.Info("Gateway Manager: Management thread started")
 
 
 	// Call this once each hour or maybe day.
@@ -100,9 +93,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 
 	// TODO given we are using dummy data, just grab the gateway information once.
 	gatewayInfo := g.gatewayRegistrationContract.GetGateways(10)
-	if (g.verbose) {
-		log.Printf("Gateway Manager: GetGateways returned %d gateways", len(gatewayInfo))
-	}
+	logging.Info("Gateway Manager: GetGateways returned %d gateways", len(gatewayInfo))
 	for _, info := range gatewayInfo {
 		comms, err := gatewayapi.NewGatewayAPIComms(info.Hostname, g.nodeID)
 		if err != nil {
@@ -120,11 +111,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 
 
 
-
-	if (g.verbose) {
-		log.Printf("Gateway Manager using %d gateways", len(g.gateways))
-	}
-	
+	logging.Info("Gateway Manager using %d gateways", len(g.gateways))
 }
 
 // BlockGateway adds a host to disallowed list of gateways

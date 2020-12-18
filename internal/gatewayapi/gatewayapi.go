@@ -5,13 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 	"github.com/bitly/go-simplejson"
-	//"fmt"
 )
 
 const (
@@ -48,7 +47,7 @@ func NewGatewayAPIComms(host string, nodeID *nodeid.NodeID) (*Comms, error){
 	// Check that the host name is valid
 	err := validateHostName(host)
 	if (err != nil) {
-		log.Println(err)
+		logging.Error("Host name invalid: %s", err. Error())
 		return nil, err
 	}
 
@@ -65,7 +64,7 @@ func (n *Comms) gatewayCall(method int32, args map[string]interface{}) (*simplej
 	args["message_type"] = method
 	args["node_id"] = n.nodeID.ToString()
 	mJSON, _ := json.Marshal(args)
-	log.Printf("JSON sent: %s", mJSON)
+	logging.Info("JSON sent: %s", string(mJSON))
 	contentReader := bytes.NewReader(mJSON)
 	req, _ := http.NewRequest("POST", n.apiURL, contentReader)
 	req.Header.Set("Content-Type", "application/json")
@@ -77,11 +76,11 @@ func (n *Comms) gatewayCall(method int32, args map[string]interface{}) (*simplej
 	}
 
 	data, _ := ioutil.ReadAll(resp.Body)
-	log.Printf("response body: %s", string(data))
+	logging.Info("response body: %s", string(data))
 
 	js, err := simplejson.NewJson(data)
 	if err != nil {
-		log.Fatalln(err)
+		logging.ErrorAndPanic("Error decoding JSON: %s", err.Error())
 	}
 
 	return js
@@ -97,6 +96,6 @@ func validateHostName(host string) error {
 	if err != nil {
 		return errors.New("Error: DNS Look-up failed for host: " + host)
 	}
-	log.Printf("Resolved %s as %s\n", host, ra.String())
+	logging.Info("Resolved %s as %s\n", host, ra.String())
 	return nil
 }

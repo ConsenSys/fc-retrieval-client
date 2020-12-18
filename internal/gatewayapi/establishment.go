@@ -16,9 +16,9 @@ package gatewayapi
  */
 
 import (
-	"log"
 	"encoding/base64"
 
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/messages"
 )
 
@@ -32,7 +32,7 @@ func (g *Comms) GatewayClientEstablishment(ttl int64, challenge [32]byte) (bool,
 	args["ttl"] = ttl
 
 	res := g.gatewayCall(messages.ClientEstablishmentRequestType, args).Get("result").MustString()
-	log.Printf("Response from server: %s\n", res)
+	logging.Info("Response from server: %s", res)
 
 	return true, nil
 }

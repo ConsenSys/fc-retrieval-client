@@ -16,23 +16,26 @@ package main
  */
 
 import (
-	"log"
 	"time"
 	"math/big"
 
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 
 	"github.com/ConsenSys/fc-retrieval-client/pkg/fcrclient"
 )
 
 func main() {
-	log.Println("Integration Test: Start")
+	// TODO switch this to logging.Test when available
+	logging.Error("Integration Test: Start")
 	integrationTests()
-	log.Println("Integration Test: End")
+	// TODO switch this to logging.Test when available
+	logging.Error("Integration Test: End")
 }
 
 func integrationTests() {
-	log.Println(" Wait two seconds for the gateway to deploy and be ready for requests")
+	// TODO switch this to logging.Test when available
+	logging.Error(" Wait two seconds for the gateway to deploy and be ready for requests")
 	time.Sleep(2 * time.Second)
 
 	var pieceCIDToFind [32]byte
@@ -42,9 +45,10 @@ func integrationTests() {
 	if err != nil {
 		panic(err)
 	}
-	settings := fcrclient.FilecoinRetrievalClientSettings{MaxEstablishmentTTL: 100, Verbose: true, NodeID: nodeID}
+	settings := fcrclient.FilecoinRetrievalClientSettings{MaxEstablishmentTTL: 100, LogLevel: "TRACE", LogTarget: "STDOUT", NodeID: nodeID}
 	client := fcrclient.InitFilecoinRetrievalClient(&settings)
 	offers := client.FindBestOffers(pieceCIDToFind, 1000, 1000)
-	log.Printf("Offers: %+v\n", offers)
+	// TODO switch this to logging.Test when available
+	logging.Error("Offers: %+v\n", offers)
 	client.Shutdown()
 }
