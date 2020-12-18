@@ -16,7 +16,7 @@ package gatewayapi
  */
 
 import (
-	"encoding/base64"
+//	"encoding/base64"
 
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cid"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
