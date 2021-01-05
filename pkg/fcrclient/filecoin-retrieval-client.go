@@ -19,6 +19,7 @@ package fcrclient
 	"encoding/hex"
 	
 	"github.com/ConsenSys/fc-retrieval-client/internal/control"
+	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
 
 )
@@ -32,17 +33,17 @@ type FilecoinRetrievalClient struct {
 }
 
 var singleInstance *FilecoinRetrievalClient
-var alreadyRun = false
+var initialised = false
 
 // InitFilecoinRetrievalClient initialise the Filecoin Retreival Client library
-func InitFilecoinRetrievalClient(settings *FilecoinRetrievalClientSettings) *FilecoinRetrievalClient {
-	if alreadyRun {
+func InitFilecoinRetrievalClient(settings Settings) *FilecoinRetrievalClient {
+	if initialised {
 		panic("Attempt to init Filecoin Retrieval Client a second time")
 	}
-	alreadyRun = true
 	var c = FilecoinRetrievalClient{}
 	c.startUp(settings)
 	singleInstance = &c
+	initialised = true
 	return singleInstance
 
 }
@@ -52,14 +53,17 @@ func InitFilecoinRetrievalClient(settings *FilecoinRetrievalClientSettings) *Fil
 
 // GetFilecoinRetrievalClient creates a Filecoin Retrieval Client
 func GetFilecoinRetrievalClient() *FilecoinRetrievalClient {
+	if !initialised {
+		panic("Filecoin Retrieval Client not initialised")
+	}
+
 	return singleInstance
 }
 
-func (c *FilecoinRetrievalClient) startUp(settings *FilecoinRetrievalClientSettings) {
+func (c *FilecoinRetrievalClient) startUp(conf Settings) {
 	logging.Info("Filecoin Retrieval Client started")
-
-	gs := control.GatewayManagerSettings{MaxEstablishmentTTL: settings.MaxEstablishmentTTL, NodeID: settings.NodeID}
-	c.gatewayManager = control.GetGatewayManager(&gs)
+	clientSettings := conf.(*settings.ClientSettings)
+	c.gatewayManager = control.GetGatewayManager(*clientSettings)
 }
 
 

@@ -2,59 +2,95 @@ package fcrclient
 
 // Copyright (C) 2020 ConsenSys Software Inc
 
+// Filecoin Retrieval Client Settings
+
 import (
-	"encoding/json"
-	"io/ioutil"
-	"log"
+	"crypto/ecdsa"
 
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
+
+	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 )
 
-const (
-	defaultSettingsFileName = "fcrsettings.json"
-	defaultSettingsFile     = "/etc/client/" + defaultSettingsFileName
 
-	defaultMaxEstablishmentTTL = int64(100)
 
-	settingsDefaultLogLevel = "TRACE"
-    settingsDefaultLogTarget = "STDOUT"
-)
+// SettingsBuilder holds the library configuration
+type SettingsBuilder interface {
+	// SetLogging sets the log level and target.
+	SetLogging(logLevel string, logTarget string)
 
-// FilecoinRetrievalClientSettings holds the library configuration
-type FilecoinRetrievalClientSettings struct {
-	MaxEstablishmentTTL int64
-	NodeID              *nodeid.NodeID
-	LogLevel        string `json:"loglevel"`        // Log Level: NONE, ERROR, WARN, INFO, TRACE
-	LogTarget       string `json:"logtarget"`       // Log Level: STDOUT
+	// SetEstablishmentTTL sets the time to live for the establishment message between client and gateway.
+	SetEstablishmentTTL(ttl int64)
+
+	// SetBlockchainPrivateKey sets the blockchain private key.
+	SetBlockchainPrivateKey(bcPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg)
+
+	// SetRetrievalPrivateKey sets the retrieval private key.
+	SetRetrievalPrivateKey(rPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg, ver *fcrcrypto.KeyVersion)
+
+	// Build creates a settings object and initialises the logging system.
+	Build() (*Settings)
 }
 
-var settings *FilecoinRetrievalClientSettings
 
-// LoadSettings loads the app settings from the settings file.
-func LoadSettings(settingsFile ...string) (*FilecoinRetrievalClientSettings, error) {
-	configFile := defaultSettingsFile
-	if len(settingsFile) == 1 {
-		configFile = settingsFile[0]
-	}
-	settingsBytes, err := ioutil.ReadFile(configFile)
-	if err != nil {
-		log.Printf("Failed to read settings file: %s: %s", configFile, err.Error())
-		return nil, err
-	}
+// Settings holds the library configuration
+type Settings interface {
+	EstablishmentTTL() 		  int64
+	ClientID() 				  *nodeid.NodeID
 
-	err = json.Unmarshal(settingsBytes, &settings)
-	if err != nil {
-		log.Printf("Failed to read settings file: %s: %s", configFile, err.Error())
-	}
+	BlockchainPrivateKey()    *ecdsa.PrivateKey 
+	BlockchainPrivateKeyAlg() *fcrcrypto.SigAlg
 
-	logging.SetLogLevel(settings.LogLevel)
-	logging.SetLogTarget(settings.LogTarget)
-	logging.Info("Filecoin Retrieval Client settings: (%+v)", settings)
-	return settings, nil
+	RetrievalPrivateKey()	  *ecdsa.PrivateKey
+	RetrievalPrivateKeyVer()  *fcrcrypto.KeyVersion
+	RetrievalPrivateKeyAlg()  *fcrcrypto.SigAlg
 }
 
-// SetSettings allows the settings object to be created in memory
-func SetSettings(set *FilecoinRetrievalClientSettings) {
-	settings = set
+
+
+// CreateSettings loads up default settings
+func CreateSettings() (SettingsBuilder) {
+	f := newBuilderImpl()
+	builder := SettingsBuilder(f)
+	return builder
 }
+
+
+
+type settingsBuilderImpl struct {
+	impl *settings.BuilderImpl
+}
+
+func newBuilderImpl() settingsBuilderImpl {
+  	return settingsBuilderImpl{settings.CreateSettings()}
+}
+
+
+// SetLogging sets the log level and target.
+func (f settingsBuilderImpl) SetLogging(logLevel string, logTarget string) {
+	f.impl.SetLogging(logLevel, logTarget)
+}
+
+// SetEstablishmentTTL sets the time to live for the establishment message between client and gateway.
+func (f settingsBuilderImpl) SetEstablishmentTTL(ttl int64) {
+	f.impl.SetEstablishmentTTL(ttl)
+}
+
+// SetBlockchainPrivateKey sets the blockchain private key.
+func (f settingsBuilderImpl) SetBlockchainPrivateKey(bcPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg) {
+	f.impl.SetBlockchainPrivateKey(bcPkey, alg)
+}
+
+// SetRetrievalPrivateKey sets the retrieval private key.
+func (f settingsBuilderImpl) SetRetrievalPrivateKey(rPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg, ver *fcrcrypto.KeyVersion) {
+	f.impl.SetRetrievalPrivateKey(rPkey, alg, ver)
+}
+
+// Build generates the settings.
+func (f settingsBuilderImpl) Build() *Settings {
+	clientSettings := f.impl.Build()
+	set := Settings(clientSettings)
+	return &set
+}
+

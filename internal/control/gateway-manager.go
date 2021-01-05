@@ -20,18 +20,17 @@ import (
 
 	"github.com/ConsenSys/fc-retrieval-client/internal/contracts"
 	"github.com/ConsenSys/fc-retrieval-client/internal/gatewayapi"
-	"github.com/ConsenSys/fc-retrieval-client/internal/prng"
+	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 )
 
 // GatewayManager managers the pool of gateways and the connections to them.
 type GatewayManager struct {
+	settings settings.ClientSettings
 	gatewayRegistrationContract *contracts.GatewayRegistrationContract 
 	gateways []ActiveGateway
 	gatewaysLock   sync.RWMutex
-	maxEstablishmentTTL int64
-	nodeID *nodeid.NodeID
 }
 
 // ActiveGateway contains information for a single gateway
@@ -41,12 +40,12 @@ type ActiveGateway struct {
 
 }
 
-// GatewayManagerSettings is used to communicate the settings to be used by the 
-// Gateway Manager.
-type GatewayManagerSettings struct {
-	MaxEstablishmentTTL int64
-	NodeID *nodeid.NodeID
-}
+// // GatewayManagerSettings is used to communicate the settings to be used by the 
+// // Gateway Manager.
+// type GatewayManagerSettings struct {
+// 	MaxEstablishmentTTL int64
+// 	NodeID *nodeid.NodeID
+// }
 
 var doOnce sync.Once
 var singleInstance *GatewayManager
@@ -54,7 +53,7 @@ var singleInstance *GatewayManager
 // GetGatewayManager returns the single instance of the gateway manager.
 // The settings parameter must be used with the first call to this function.
 // After that, the settings parameter is ignored.
-func GetGatewayManager(settings ...*GatewayManagerSettings) *GatewayManager {
+func GetGatewayManager(settings ...settings.ClientSettings) *GatewayManager {
     doOnce.Do(func() {
 		if len(settings) != 1 {
 			// TODO replace with ErrorAndPanic once available
@@ -65,11 +64,10 @@ func GetGatewayManager(settings ...*GatewayManagerSettings) *GatewayManager {
 	return singleInstance
 }
 
-func startGatewayManager(settings *GatewayManagerSettings) {
+func startGatewayManager(settings settings.ClientSettings) {
 	g := GatewayManager{}
-	g.maxEstablishmentTTL = settings.MaxEstablishmentTTL
+	g.settings = settings
 	g.gatewayRegistrationContract = contracts.GetGatewayRegistrationContract() 
-	g.nodeID = settings.NodeID
 
 	singleInstance = &g
 
@@ -95,15 +93,15 @@ func (g *GatewayManager) gatewayManagerRunner() {
 	gatewayInfo := g.gatewayRegistrationContract.GetGateways(10)
 	logging.Info("Gateway Manager: GetGateways returned %d gateways", len(gatewayInfo))
 	for _, info := range gatewayInfo {
-		comms, err := gatewayapi.NewGatewayAPIComms(info.Hostname, g.nodeID)
+		comms, err := gatewayapi.NewGatewayAPIComms(info.Hostname, g.settings.ClientID())
 		if err != nil {
 			panic(err)
 		} 
 
 		// Try to do the establishment with the new gateway
 		var challenge [32]byte
-		prng.GenerateRandomBytes(challenge[:])
-		comms.GatewayClientEstablishment(g.maxEstablishmentTTL, challenge)
+		fcrcrypto.GenerateRandomBytes(challenge[:])
+		comms.GatewayClientEstablishment(g.settings.EstablishmentTTL(), challenge)
 
 		activeGateway := ActiveGateway{info, comms}
 		g.gateways = append(g.gateways, activeGateway)

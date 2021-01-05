@@ -1,5 +1,5 @@
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20201218004623-31cf6179f122 h1:FgtXhd9T6JkntaecCzZsKXJ33RDriXW+dMRQjzuw+o8=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20201218004623-31cf6179f122/go.mod h1:d2x9BwRHPR/6Pln2KjK+j0SlaXuT2wjvlgZV9jP4Me8=
+github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210104095632-42e428e9b279 h1:vnz/z4C+L9888hzSPBbWklIoXus5IszA+tM+Np0WQEM=
+github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210104095632-42e428e9b279/go.mod h1:d2x9BwRHPR/6Pln2KjK+j0SlaXuT2wjvlgZV9jP4Me8=
 github.com/ant0ine/go-json-rest v3.3.2+incompatible/go.mod h1:q6aCt0GfU6LhpBsnZ/2U+mwe+0XB5WStbmwyoPfc+sk=
 github.com/bitly/go-simplejson v0.5.0 h1:6IH+V8/tVMab511d5bn4M7EwGXZf9Hj6i2xSwkNEM+Y=
 github.com/bitly/go-simplejson v0.5.0/go.mod h1:cXHtHw4XUPsvGaxgjIAn8PhEWG9NfngEKAMDJEczWVA=

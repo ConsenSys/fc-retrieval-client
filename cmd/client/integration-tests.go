@@ -17,10 +17,9 @@ package main
 
 import (
 	"time"
-	"math/big"
 
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 
 	"github.com/ConsenSys/fc-retrieval-client/pkg/fcrclient"
 )
@@ -40,13 +39,19 @@ func integrationTests() {
 
 	var pieceCIDToFind [32]byte
 
-	// TODO remove this and handle node ID
-	nodeID, err := nodeid.NewNodeID(big.NewInt(7))
+
+	blockchainPrivateKey, err := fcrcrypto.GenKeyPair()
 	if err != nil {
 		panic(err)
 	}
-	settings := fcrclient.FilecoinRetrievalClientSettings{MaxEstablishmentTTL: 100, LogLevel: "TRACE", LogTarget: "STDOUT", NodeID: nodeID}
-	client := fcrclient.InitFilecoinRetrievalClient(&settings)
+	blockchainPrivateKeyAlg := fcrcrypto.DecodeSigAlg(fcrcrypto.SigAlgEcdsaP256Sha512_256)
+
+	confBuilder := fcrclient.CreateSettings()
+	confBuilder.SetEstablishmentTTL(101)
+	confBuilder.SetBlockchainPrivateKey(blockchainPrivateKey, blockchainPrivateKeyAlg)
+	conf := confBuilder.Build()
+
+	client := fcrclient.InitFilecoinRetrievalClient(*conf)
 	offers := client.FindBestOffers(pieceCIDToFind, 1000, 1000)
 	// TODO switch this to logging.Test when available
 	logging.Error("Offers: %+v\n", offers)
