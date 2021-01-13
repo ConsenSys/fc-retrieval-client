@@ -21,6 +21,9 @@ build:
 push:
 #	gcloud docker -- push ${REGISTRY}/fc-retrieval-client:${VERSION}
 
+detectlocal:
+	cd scripts; bash detect-local-gateway-repo.sh
+
 utest:
 	go test ./...
 
