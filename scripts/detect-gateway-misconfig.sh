@@ -23,7 +23,7 @@ echo "Found Gateway repo: $GATEWAY_DIR"
 CLIENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 echo "Client repo branch: $CLIENT_BRANCH"
 cd $GATEWAY_DIR
-BRANCH_EXISTS_ON_GATEWAY=`git branch --list | grep $CLIENT_BRANCH`
+BRANCH_EXISTS_ON_GATEWAY=`git branch -r --list origin/$CLIENT_BRANCH`
 #echo "BRANCH_EXISTS_ON_GATEWAY: $BRANCH_EXISTS_ON_GATEWAY"
 
 cd $CLIENT_DIR
