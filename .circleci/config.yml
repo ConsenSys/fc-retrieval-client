@@ -19,8 +19,6 @@ jobs:
     steps:
       # git clone the Client and change to the correct branch.
       - checkout
-      # Ensure go.mod is configured correctly
-      - run: make detectmisconfig
       # git clone the Gateway and Provider and switch to a branch which matches the 
       # name of the branch on the Client repo. If no such branch exists, just use main
       - run: 
@@ -67,6 +65,8 @@ jobs:
               fi
               git rev-parse HEAD
           working_directory: /go/src/github.com/ConsenSys/fc-retrieval-provider
+      # Ensure go.mod is configured correctly
+      - run: make detectmisconfig
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
@@ -108,6 +108,15 @@ jobs:
     working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
     steps:
       - checkout
+      # git clone the Gateway and Provider so that they are available for the 
+      # detect mis-configuration script.
+      - run: 
+          name: "Git clone Gateway, and Provider"
+          command: |
+              git clone https://github.com/ConsenSys/fc-retrieval-gateway
+              git clone https://github.com/ConsenSys/fc-retrieval-provider
+          working_directory: /go/src/github.com/ConsenSys/
+
       # Ensure go.mod is configured correctly
       - run: make detectmisconfig
       # Run unit tests
