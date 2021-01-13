@@ -13,3 +13,6 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# temp file created which checking go.mod file configuration.
+go.mod.temp

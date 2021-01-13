@@ -5,8 +5,6 @@ package settings
 // Filecoin Retrieval Client Settings
 
 import (
-	"crypto/ecdsa"
-
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 )
@@ -19,12 +17,10 @@ type ClientSettings struct {
 	establishmentTTL int64
 	clientID              *nodeid.NodeID
 
-	blockchainPrivateKey	*ecdsa.PrivateKey 
-	blockchainPrivateKeyAlg	*fcrcrypto.SigAlg
+	blockchainPrivateKey	*fcrcrypto.KeyPair
 
-	retrievalPrivateKey		*ecdsa.PrivateKey
+	retrievalPrivateKey		*fcrcrypto.KeyPair
 	retrievalPrivateKeyVer	*fcrcrypto.KeyVersion
-	retrievalPrivateKeyAlg	*fcrcrypto.SigAlg
 }
 
 
@@ -39,28 +35,18 @@ func (c ClientSettings) ClientID() *nodeid.NodeID {
 }
 
 // BlockchainPrivateKey returns the BlockchainPrivateKey
-func (c ClientSettings) BlockchainPrivateKey() *ecdsa.PrivateKey {
+func (c ClientSettings) BlockchainPrivateKey() *fcrcrypto.KeyPair {
 	return c.blockchainPrivateKey
 }
 
-// BlockchainPrivateKeyAlg returns the BlockchainPrivateKeyAlg
-func (c ClientSettings) BlockchainPrivateKeyAlg() *fcrcrypto.SigAlg {
-	return c.blockchainPrivateKeyAlg
-}
-
 // RetrievalPrivateKey returns the RetrievalPrivateKey
-func (c ClientSettings) RetrievalPrivateKey() *ecdsa.PrivateKey {
+func (c ClientSettings) RetrievalPrivateKey() *fcrcrypto.KeyPair {
 	return c.retrievalPrivateKey
 }
 
 // RetrievalPrivateKeyVer returns the RetrievalPrivateKeyVer
 func (c ClientSettings) RetrievalPrivateKeyVer() *fcrcrypto.KeyVersion {
 	return c.retrievalPrivateKeyVer
-}
-
-// RetrievalPrivateKeyAlg returns the RetrievalPrivateKeyAlg
-func (c ClientSettings) RetrievalPrivateKeyAlg() *fcrcrypto.SigAlg {
-	return c.retrievalPrivateKeyAlg
 }
 
 

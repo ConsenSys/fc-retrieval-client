@@ -5,8 +5,6 @@ package settings
 // Filecoin Retrieval Client Settings
 
 import (
-	"crypto/ecdsa"
-
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
@@ -20,12 +18,10 @@ type BuilderImpl struct {
 	establishmentTTL int64
 	clientID              *nodeid.NodeID
 
-	blockchainPrivateKey	*ecdsa.PrivateKey 
-	blockchainPrivateKeyAlg	*fcrcrypto.SigAlg
+	blockchainPrivateKey	*fcrcrypto.KeyPair
 
-	retrievalPrivateKey		*ecdsa.PrivateKey
+	retrievalPrivateKey		*fcrcrypto.KeyPair
 	retrievalPrivateKeyVer	*fcrcrypto.KeyVersion
-	retrievalPrivateKeyAlg	*fcrcrypto.SigAlg
 }
 
 // CreateSettings creates an object with the default settings.
@@ -50,15 +46,13 @@ func (f *BuilderImpl) SetEstablishmentTTL(ttl int64) {
 }
 
 // SetBlockchainPrivateKey sets the blockchain private key.
-func (f *BuilderImpl) SetBlockchainPrivateKey(bcPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg) {
+func (f *BuilderImpl) SetBlockchainPrivateKey(bcPkey *fcrcrypto.KeyPair) {
 	f.blockchainPrivateKey = bcPkey
-	f.blockchainPrivateKeyAlg = alg
 }
 
 // SetRetrievalPrivateKey sets the retrieval private key.
-func (f *BuilderImpl) SetRetrievalPrivateKey(rPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg, ver *fcrcrypto.KeyVersion) {
+func (f *BuilderImpl) SetRetrievalPrivateKey(rPkey *fcrcrypto.KeyPair, ver *fcrcrypto.KeyVersion) {
 	f.retrievalPrivateKey = rPkey
-	f.retrievalPrivateKeyAlg = alg
 	f.retrievalPrivateKeyVer = ver
 }
 
@@ -77,13 +71,11 @@ func (f *BuilderImpl) Build() (*ClientSettings){
 		logging.ErrorAndPanic("Settings: Blockchain Private Key not set")
 	}
 	g.blockchainPrivateKey = f.blockchainPrivateKey
-	g.blockchainPrivateKeyAlg = f.blockchainPrivateKeyAlg
 
 	if f.clientID == nil {
 		logging.Info("Settings: No Client ID set. Generating random client ID")
 		// TODO replace once NewRandomNodeID becomes available.
-//		g.clientID = nodeid.NewRandomNodeID()
-		g.clientID, err = nodeid.NewNodeIDFromString("12345678")
+		g.clientID , err = nodeid.NewRandomNodeID()
 		if err != nil {
 			logging.ErrorAndPanic("Settings: Error while generating random client ID: %s", err)
 		}
@@ -92,16 +84,14 @@ func (f *BuilderImpl) Build() (*ClientSettings){
 	}
 
 	if (f.retrievalPrivateKey == nil) {
-		pKey, err := fcrcrypto.GenKeyPair()
+		pKey, err := fcrcrypto.GenerateRetrievalV1KeyPair()
 		if (err != nil) {
 			logging.ErrorAndPanic("Settings: Error while generating random retrieval key pair: %s", err)
 		}
 		f.retrievalPrivateKey = pKey
-		f.retrievalPrivateKeyAlg = &fcrcrypto.SigAlg{Alg: fcrcrypto.SigAlgEcdsaP256Sha512_256}
 		f.retrievalPrivateKeyVer = fcrcrypto.DecodeKeyVersion(1)
 	} else {
 		g.retrievalPrivateKey = f.retrievalPrivateKey
-		g.retrievalPrivateKeyAlg = f.retrievalPrivateKeyAlg
 		g.retrievalPrivateKeyVer = f.retrievalPrivateKeyVer
 	}
 

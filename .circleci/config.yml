@@ -19,8 +19,8 @@ jobs:
     steps:
       # git clone the Client and change to the correct branch.
       - checkout
-      # Ensure go.mod is not set-up to use local directories.
-      - run: make detectlocal
+      # Ensure go.mod is configured correctly
+      - run: make detectmisconfig
       # git clone the Gateway and Provider and switch to a branch which matches the 
       # name of the branch on the Client repo. If no such branch exists, just use main
       - run: 
@@ -108,8 +108,8 @@ jobs:
     working_directory: /go/src/github.com/ConsenSys/fc-retrieval-client/
     steps:
       - checkout
-      # Ensure go.mod is not set-up to use local directories.
-      - run: make detectlocal
+      # Ensure go.mod is configured correctly
+      - run: make detectmisconfig
       # Run unit tests
       - run: make utest
 

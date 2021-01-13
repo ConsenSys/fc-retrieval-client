@@ -40,15 +40,14 @@ func integrationTests() {
 	var pieceCIDToFind [32]byte
 
 
-	blockchainPrivateKey, err := fcrcrypto.GenKeyPair()
+	blockchainPrivateKey, err := fcrcrypto.GenerateBlockchainKeyPair()
 	if err != nil {
 		panic(err)
 	}
-	blockchainPrivateKeyAlg := fcrcrypto.DecodeSigAlg(fcrcrypto.SigAlgEcdsaP256Sha512_256)
 
 	confBuilder := fcrclient.CreateSettings()
 	confBuilder.SetEstablishmentTTL(101)
-	confBuilder.SetBlockchainPrivateKey(blockchainPrivateKey, blockchainPrivateKeyAlg)
+	confBuilder.SetBlockchainPrivateKey(blockchainPrivateKey)
 	conf := confBuilder.Build()
 
 	client := fcrclient.InitFilecoinRetrievalClient(*conf)

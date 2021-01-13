@@ -5,8 +5,6 @@ package fcrclient
 // Filecoin Retrieval Client Settings
 
 import (
-	"crypto/ecdsa"
-
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 
@@ -24,10 +22,10 @@ type SettingsBuilder interface {
 	SetEstablishmentTTL(ttl int64)
 
 	// SetBlockchainPrivateKey sets the blockchain private key.
-	SetBlockchainPrivateKey(bcPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg)
+	SetBlockchainPrivateKey(bcPkey *fcrcrypto.KeyPair)
 
 	// SetRetrievalPrivateKey sets the retrieval private key.
-	SetRetrievalPrivateKey(rPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg, ver *fcrcrypto.KeyVersion)
+	SetRetrievalPrivateKey(rPkey *fcrcrypto.KeyPair, ver *fcrcrypto.KeyVersion)
 
 	// Build creates a settings object and initialises the logging system.
 	Build() (*Settings)
@@ -39,12 +37,10 @@ type Settings interface {
 	EstablishmentTTL() 		  int64
 	ClientID() 				  *nodeid.NodeID
 
-	BlockchainPrivateKey()    *ecdsa.PrivateKey 
-	BlockchainPrivateKeyAlg() *fcrcrypto.SigAlg
+	BlockchainPrivateKey()    *fcrcrypto.KeyPair 
 
-	RetrievalPrivateKey()	  *ecdsa.PrivateKey
+	RetrievalPrivateKey()	  *fcrcrypto.KeyPair
 	RetrievalPrivateKeyVer()  *fcrcrypto.KeyVersion
-	RetrievalPrivateKeyAlg()  *fcrcrypto.SigAlg
 }
 
 
@@ -78,13 +74,13 @@ func (f settingsBuilderImpl) SetEstablishmentTTL(ttl int64) {
 }
 
 // SetBlockchainPrivateKey sets the blockchain private key.
-func (f settingsBuilderImpl) SetBlockchainPrivateKey(bcPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg) {
-	f.impl.SetBlockchainPrivateKey(bcPkey, alg)
+func (f settingsBuilderImpl) SetBlockchainPrivateKey(bcPkey *fcrcrypto.KeyPair) {
+	f.impl.SetBlockchainPrivateKey(bcPkey)
 }
 
 // SetRetrievalPrivateKey sets the retrieval private key.
-func (f settingsBuilderImpl) SetRetrievalPrivateKey(rPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg, ver *fcrcrypto.KeyVersion) {
-	f.impl.SetRetrievalPrivateKey(rPkey, alg, ver)
+func (f settingsBuilderImpl) SetRetrievalPrivateKey(rPkey *fcrcrypto.KeyPair, ver *fcrcrypto.KeyVersion) {
+	f.impl.SetRetrievalPrivateKey(rPkey, ver)
 }
 
 // Build generates the settings.
