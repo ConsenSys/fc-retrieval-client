@@ -21,7 +21,7 @@ RUN go clean -modcache
 # Get all dependancies, but don't install.
 RUN go get -d -v github.com/ConsenSys/fc-retrieval-client/cmd/client
 # Do a full compile of app and dependancies, forcing static linking.
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /go/bin/client github.com/ConsenSys/fc-retrieval-client/cmd/client
+RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o /go/bin/client github.com/ConsenSys/fc-retrieval-client/cmd/client
 # Don't do install, as build now done. 
 #RUN go install github.com/ConsenSys/fc-retrieval-client/cmd/client
 

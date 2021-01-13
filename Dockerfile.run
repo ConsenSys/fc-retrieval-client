@@ -1,7 +1,8 @@
 # Copyright (C) 2020 ConsenSys Software Inc.
 # Docker file used for creating run-time docker image.
 # Use a minimalist base image.
-FROM scratch
+# FROM scratch
+FROM golang
 
 # Put in the settings file needed at runtime.
 ADD settings.json /etc/client/
