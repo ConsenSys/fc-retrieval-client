@@ -6,7 +6,7 @@ echo "*************************************************"
 # Check that it isn't set to using a local checkout.
 REPLACE_EXISTS=`grep "replace " ../go.mod`
 if [ -n "$REPLACE_EXISTS" ]; then
-    echo "Using local gateway repo"
+    echo "ERROR: Using local gateway repo"
     echo "Replace set to: $REPLACE_EXISTS"
     exit 1
 fi
@@ -25,6 +25,12 @@ echo "Client repo branch: $CLIENT_BRANCH"
 cd $GATEWAY_DIR
 BRANCH_EXISTS_ON_GATEWAY=`git branch -r --list origin/$CLIENT_BRANCH`
 #echo "BRANCH_EXISTS_ON_GATEWAY: $BRANCH_EXISTS_ON_GATEWAY"
+
+echo HERE1
+pwd
+echo HERE2
+git branch -r --list origin/$CLIENT_BRANCH
+echo HERE3
 
 cd $CLIENT_DIR
 GATEWAY_BRANCH_TO_USE=$CLIENT_BRANCH
