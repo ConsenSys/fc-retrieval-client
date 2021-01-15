@@ -13,8 +13,7 @@ release: clean utest build
 
 # builds a docker image that builds the app and packages it into a minimal docker image
 build:
-	docker build -t ${REGISTRY}fc-retrieval-client-builder .
-	docker run --rm ${REGISTRY}fc-retrieval-client-builder | docker build --pull -t "${REGISTRY}fc-retrieval-client:${VERSION}" -
+	docker build -t ${REGISTRY}fc-retrieval-client:${VERSION} .
 
 
 # push the image to an registry
