@@ -8,6 +8,8 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 	"github.com/bitly/go-simplejson"
@@ -33,11 +35,11 @@ var clientAPIProtocolSupported []int
 // Comms holds the communications specific data
 type Comms struct {
 	apiURL string
-	nodeID *nodeid.NodeID
+	settings *settings.ClientSettings
 }
 
 // NewGatewayAPIComms creates a connection with a gateway
-func NewGatewayAPIComms(host string, nodeID *nodeid.NodeID) (*Comms, error){
+func NewGatewayAPIComms(host string, settings *settings.ClientSettings) (*Comms, error){
 	// Create the constant array.
 	if (clientAPIProtocolSupported == nil) {
 		clientAPIProtocolSupported = make([]int, 1)
@@ -53,26 +55,38 @@ func NewGatewayAPIComms(host string, nodeID *nodeid.NodeID) (*Comms, error){
 
 	netComms := Comms{}
 	netComms.apiURL = apiURLStart + host + apiURLEnd
-	netComms.nodeID = nodeID
+	netComms.settings = settings
 	return &netComms, nil
 }
 
 // GatewayCall calls the Gateway's REST API
-func (n *Comms) gatewayCall(method int32, args map[string]interface{}) (*simplejson.Json) {
+func (c *Comms) gatewayCall(method int32, args map[string]interface{}) (*simplejson.Json) {
+	// Add in common fields to map.
 	args["protocol_version"] = int32(1)
 	args["protocol_supported"] = []int32{1}
 	args["message_type"] = method
-	args["node_id"] = n.nodeID.ToString()
+	args["node_id"] = c.settings.ClientID().ToString()
+
+	// Sign fields.
+	sig, err := fcrcrypto.SignMessage(c.settings.RetrievalPrivateKey(), c.settings.RetrievalPrivateKeyVer(), args)
+	if err != nil {
+		logging.ErrorAndPanic("Issue signing message: %s", err)
+		panic(err)
+	}
+	args["signature"] = sig
+
+	// Create HTTP request.
 	mJSON, _ := json.Marshal(args)
 	logging.Info("JSON sent: %s", string(mJSON))
 	contentReader := bytes.NewReader(mJSON)
-	req, _ := http.NewRequest("POST", n.apiURL, contentReader)
+	req, _ := http.NewRequest("POST", c.apiURL, contentReader)
 	req.Header.Set("Content-Type", "application/json")
 
+	// Send request and receive response.
 	client := &http.Client{}
-	resp, errs := client.Do(req)
-	if errs != nil {
-		panic(errs)
+	resp, err := client.Do(req)
+	if err != nil {
+		logging.ErrorAndPanic("Client - Gateway communications (%s): %s", c.apiURL, err)
 	}
 
 	data, _ := ioutil.ReadAll(resp.Body)
