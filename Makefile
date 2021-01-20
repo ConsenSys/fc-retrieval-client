@@ -33,6 +33,8 @@ itest:
 	docker-compose down
 	docker-compose up --abort-on-container-exit --exit-code-from client
 
+stop:
+	docker-compose down
 
 # remove previous images and containers
 clean:
@@ -42,5 +44,5 @@ clean:
 	docker rmi -f "${REGISTRY}fc-retrieval-client:${VERSION}" || true
 
 # Alays assume these targets are out of date.
-.PHONY: clean itest utest build release push detectmisconfig detectlocal
+.PHONY: clean itest utest build release push detectmisconfig detectlocal stop
 
