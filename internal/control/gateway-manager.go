@@ -101,7 +101,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 		// Try to do the establishment with the new gateway
 		var challenge [32]byte
 		fcrcrypto.GeneratePublicRandomBytes(challenge[:])
-		comms.GatewayClientEstablishment(g.settings.EstablishmentTTL(), challenge)
+		comms.GatewayClientEstablishment(challenge)
 
 		activeGateway := ActiveGateway{info, comms}
 		g.gateways = append(g.gateways, activeGateway)

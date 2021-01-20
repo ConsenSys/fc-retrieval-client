@@ -11,6 +11,7 @@ import (
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/messages"
 	"github.com/bitly/go-simplejson"
 )
 
@@ -58,24 +59,12 @@ func NewGatewayAPIComms(host string, settings *settings.ClientSettings) (*Comms,
 	return &netComms, nil
 }
 
-// GatewayCall calls the Gateway's REST API
-func (c *Comms) gatewayCall(method int32, args map[string]interface{}) (*simplejson.Json) {
-	// Add in common fields to map.
-	args["protocol_version"] = int32(1)
-	args["protocol_supported"] = []int32{1}
-	args["message_type"] = method
-	args["node_id"] = c.settings.ClientID().ToString()
 
-	// Sign fields.
-	sig, err := fcrcrypto.SignMessage(c.settings.RetrievalPrivateKey(), c.settings.RetrievalPrivateKeyVer(), args)
-	if err != nil {
-		logging.ErrorAndPanic("Issue signing message: %s", err)
-		panic(err)
-	}
-	args["signature"] = sig
+// GatewayCall calls the Gateway's REST API
+func (c *Comms) gatewayCall(msg interface{}) (*simplejson.Json) {
 
 	// Create HTTP request.
-	mJSON, _ := json.Marshal(args)
+	mJSON, _ := json.Marshal(msg)
 	logging.Info("JSON sent: %s", string(mJSON))
 	contentReader := bytes.NewReader(mJSON)
 	req, _ := http.NewRequest("POST", c.apiURL, contentReader)
@@ -111,4 +100,25 @@ func validateHostName(host string) error {
 	}
 	logging.Info("Resolved %s as %s\n", host, ra.String())
 	return nil
+}
+
+func (c *Comms) addCommonFieldsAndSign(method int32, msg messages.ClientCommonRequestFields) {
+	logging.Test("HERE**************************************")
+	msg.Set(method, int32(1), []int32{1}, c.settings.ClientID().ToString(), c.settings.EstablishmentTTL())
+
+	// msg.
+	// // Add in common fields to map.
+	// (*args)["protocol_version"] = int32(1)
+	// (*args)["protocol_supported"] = []int32{1}
+	// (*args)["message_type"] = method
+	// (*args)["node_id"] = c.settings.ClientID().ToString()
+
+	// Sign fields.
+	sig, err := fcrcrypto.SignMessage(c.settings.RetrievalPrivateKey(), 
+		c.settings.RetrievalPrivateKeyVer(), msg)
+	if err != nil {
+		logging.ErrorAndPanic("Issue signing message: %s", err)
+		panic(err)
+	}
+	msg.SetSignature(sig)
 }

@@ -4,7 +4,7 @@
 
 # Usage:
 #   [VERSION=v3] [REGISTRY="gcr.io/google_containers"] make build
-VERSION?=v1
+VERSION?=dev
 REGISTRY?=
 
 # This target (the first target in the build file) is the one that is executed if no 

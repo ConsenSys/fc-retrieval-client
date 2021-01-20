@@ -6,6 +6,10 @@ github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210115025137-e17461d43715 h1:
 github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210115025137-e17461d43715/go.mod h1:POZ2s7Ajs0RQ9gJB7w8qfagGe83zywHIyCMJTOaDg0o=
 github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210117220829-31527b51cf39 h1:6G8gJoMq//9yI0BxiXjplATwN/uHdkyRR5ZDHE1CO2A=
 github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210117220829-31527b51cf39/go.mod h1:POZ2s7Ajs0RQ9gJB7w8qfagGe83zywHIyCMJTOaDg0o=
+github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210118053403-539e801d840d h1:70jjymMwkCAwTHrv48JxI2MydNG1M/Dfa3zPxl6ij+Q=
+github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210118053403-539e801d840d/go.mod h1:POZ2s7Ajs0RQ9gJB7w8qfagGe83zywHIyCMJTOaDg0o=
+github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210118073630-affa00ae6d89 h1:/PZ9VoKH7qPhMtkXYWXkElS+Gs6mbuQ87MLrFq6FTz8=
+github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210118073630-affa00ae6d89/go.mod h1:POZ2s7Ajs0RQ9gJB7w8qfagGe83zywHIyCMJTOaDg0o=
 github.com/ant0ine/go-json-rest v3.3.2+incompatible/go.mod h1:q6aCt0GfU6LhpBsnZ/2U+mwe+0XB5WStbmwyoPfc+sk=
 github.com/bitly/go-simplejson v0.5.0 h1:6IH+V8/tVMab511d5bn4M7EwGXZf9Hj6i2xSwkNEM+Y=
 github.com/bitly/go-simplejson v0.5.0/go.mod h1:cXHtHw4XUPsvGaxgjIAn8PhEWG9NfngEKAMDJEczWVA=
