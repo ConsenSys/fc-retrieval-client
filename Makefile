@@ -24,7 +24,7 @@ detectlocal:
 	cd scripts; bash detect-local-gateway-repo.sh
 
 detectmisconfig:
-	cd scripts; bash detect-gateway-misconfig.sh
+	cd scripts; bash detect-pkg-misconfig.sh
 
 utest:
 	go test ./...

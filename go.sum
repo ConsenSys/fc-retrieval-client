@@ -1,13 +1,3 @@
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210113064916-ab0faa2aca82 h1:zvPvDSZK61xn7waf4ubXbzzck9Cz46leH6nk8JYX36A=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210113064916-ab0faa2aca82/go.mod h1:POZ2s7Ajs0RQ9gJB7w8qfagGe83zywHIyCMJTOaDg0o=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210114064302-56d2d5dc0163 h1:huZk0IBNNwTS7PXnf0Hor9Sfxj7MeLb2VJOwbs+Z0DY=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210114064302-56d2d5dc0163/go.mod h1:POZ2s7Ajs0RQ9gJB7w8qfagGe83zywHIyCMJTOaDg0o=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210115025137-e17461d43715 h1:cT77Jtsw1/NAwO0RdY+rN0aI8/UyttjSks2YThs/x+4=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210115025137-e17461d43715/go.mod h1:POZ2s7Ajs0RQ9gJB7w8qfagGe83zywHIyCMJTOaDg0o=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210117220829-31527b51cf39 h1:6G8gJoMq//9yI0BxiXjplATwN/uHdkyRR5ZDHE1CO2A=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210117220829-31527b51cf39/go.mod h1:POZ2s7Ajs0RQ9gJB7w8qfagGe83zywHIyCMJTOaDg0o=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210118053403-539e801d840d h1:70jjymMwkCAwTHrv48JxI2MydNG1M/Dfa3zPxl6ij+Q=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210118053403-539e801d840d/go.mod h1:POZ2s7Ajs0RQ9gJB7w8qfagGe83zywHIyCMJTOaDg0o=
 github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210118073630-affa00ae6d89 h1:/PZ9VoKH7qPhMtkXYWXkElS+Gs6mbuQ87MLrFq6FTz8=
 github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210118073630-affa00ae6d89/go.mod h1:POZ2s7Ajs0RQ9gJB7w8qfagGe83zywHIyCMJTOaDg0o=
 github.com/ant0ine/go-json-rest v3.3.2+incompatible/go.mod h1:q6aCt0GfU6LhpBsnZ/2U+mwe+0XB5WStbmwyoPfc+sk=
