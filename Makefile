@@ -30,6 +30,7 @@ utest:
 	go test ./...
 
 itest:
+	docker images
 	docker-compose down
 	docker-compose up --abort-on-container-exit --exit-code-from client
 
