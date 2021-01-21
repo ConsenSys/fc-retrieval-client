@@ -18,6 +18,5 @@ else
     echo
     echo Please execute:
     echo   bash use-remote-repos.sh
-    echo   go mod tidy
     exit 1
 fi
