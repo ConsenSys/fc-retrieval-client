@@ -18,8 +18,9 @@ package gatewayapi
 import (
 	"testing"
 
-	//	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
 
+	"github.com/ConsenSys/fc-retrieval-client/internal/contracts"
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
@@ -44,16 +45,51 @@ func TestSigning(t *testing.T) {
 	s.SetRetrievalPrivateKey(retirevalPrivateKey, retrievalPrivateKeyVer);
 	settings := s.Build()
 
-	gAPI, err := NewGatewayAPIComms("1.2.3.4", settings)
+	gAPI, err := NewGatewayAPIComms(createDummyGatewayInformation(), settings)
 	if err != nil {
 		panic(err)
 	}
+	// Switch out the gateway key for the client key for this test so that the 
+	// client message can be verified using the client public key.
+	gAPI.gatewayPubKey = retirevalPrivateKey
 
 	msg := messages.ClientEstablishmentRequest{}
 	msg.Challenge = "1234567890abcdef1234567890"
 	method := int32(messages.ClientEstablishmentRequestType)
-	gAPI.addCommonFieldsAndSign(method, msg.ClientCommonRequestFields);
-	logging.Error("message type: %+v", msg.MessageType)
+	gAPI.addCommonFieldsAndSign(method, &msg.ClientCommonRequestFields, msg);
+	logging.Test("message: %+v", msg)
 
 	// TODO verify
+	signature := msg.ClientCommonRequestFields.Signature
+	msg.ClientCommonRequestFields.Signature = ""
+	verified := gAPI.verifyMessage(signature, msg)
+	assert.Equal(t, true, verified)
+}
+
+
+
+func createDummyGatewayInformation() *contracts.GatewayInformation{
+	l := contracts.LocationInfo{RegionCode: "A", CountryCode: "AU", SubDivisionCode: "AU-QLD"}
+	var dummyGatewayID [32]byte
+	dummyGatewayID[0] = 0x12
+	gatewayKeyPair, err := fcrcrypto.GenerateRetrievalV1KeyPair()
+	if err != nil {
+		logging.ErrorAndPanic("Error: %s", err)
+	}
+	encodedPubKey, err := gatewayKeyPair.EncodePublicKey()
+	if err != nil {
+		logging.ErrorAndPanic("Error: %s", err)
+	}
+	gatewayPublicKey, err := fcrcrypto.DecodePublicKey(encodedPubKey)
+
+	gatewayPublicKeyVer := fcrcrypto.InitialKeyVersion()
+	
+	gi := contracts.GatewayInformation{
+		GatewayID: dummyGatewayID, 
+		Hostname: "localhost",   // use a host name that will definitely resolve
+		Location: &l, 
+		GatewayRetrievalPublicKey: gatewayPublicKey,
+		GatewayRetrievalPublicKeyVersion: gatewayPublicKeyVer,
+	}
+	return &gi
 }

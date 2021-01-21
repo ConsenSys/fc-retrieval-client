@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/ConsenSys/fc-retrieval-client/internal/contracts"
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
@@ -35,11 +36,15 @@ var clientAPIProtocolSupported []int
 // Comms holds the communications specific data
 type Comms struct {
 	apiURL string
+	gatewayPubKey *fcrcrypto.KeyPair
+	gatewayPubKeyVer *fcrcrypto.KeyVersion
 	settings *settings.ClientSettings
 }
 
 // NewGatewayAPIComms creates a connection with a gateway
-func NewGatewayAPIComms(host string, settings *settings.ClientSettings) (*Comms, error){
+func NewGatewayAPIComms(gatewayInfo *contracts.GatewayInformation, settings *settings.ClientSettings) (*Comms, error){
+	host := gatewayInfo.Hostname
+
 	// Create the constant array.
 	if (clientAPIProtocolSupported == nil) {
 		clientAPIProtocolSupported = make([]int, 1)
@@ -55,6 +60,8 @@ func NewGatewayAPIComms(host string, settings *settings.ClientSettings) (*Comms,
 
 	netComms := Comms{}
 	netComms.apiURL = apiURLStart + host + apiURLEnd
+	netComms.gatewayPubKey = gatewayInfo.GatewayRetrievalPublicKey
+	netComms.gatewayPubKeyVer = gatewayInfo.GatewayRetrievalPublicKeyVersion
 	netComms.settings = settings
 	return &netComms, nil
 }
@@ -102,23 +109,35 @@ func validateHostName(host string) error {
 	return nil
 }
 
-func (c *Comms) addCommonFieldsAndSign(method int32, msg messages.ClientCommonRequestFields) {
-	logging.Test("HERE**************************************")
+func (c *Comms) addCommonFieldsAndSign(method int32, msg *messages.ClientCommonRequestFields, wholeMessage interface{}) {
 	msg.Set(method, int32(1), []int32{1}, c.settings.ClientID().ToString(), c.settings.EstablishmentTTL())
-
-	// msg.
-	// // Add in common fields to map.
-	// (*args)["protocol_version"] = int32(1)
-	// (*args)["protocol_supported"] = []int32{1}
-	// (*args)["message_type"] = method
-	// (*args)["node_id"] = c.settings.ClientID().ToString()
 
 	// Sign fields.
 	sig, err := fcrcrypto.SignMessage(c.settings.RetrievalPrivateKey(), 
-		c.settings.RetrievalPrivateKeyVer(), msg)
+		c.settings.RetrievalPrivateKeyVer(), wholeMessage)
 	if err != nil {
 		logging.ErrorAndPanic("Issue signing message: %s", err)
 		panic(err)
 	}
 	msg.SetSignature(sig)
+}
+
+func (c *Comms) verifyMessage(signature string, wholeMessage interface{}) bool {
+	keyVersion, err := fcrcrypto.ExtractKeyVersionFromMessage(signature)
+	if err != nil {
+		logging.Warn("Error decodign signature: %+v", err)
+		return false
+	}
+	if keyVersion.NotEquals(c.gatewayPubKeyVer) {
+		// TODO need to allow for multiple key versions, and fetch correct key
+		// TODO based on version.
+		logging.Error("Unknown Key Version used by gateway: %d", keyVersion.EncodeKeyVersion())
+	}
+
+	verified, err := fcrcrypto.VerifyMessage(c.gatewayPubKey, signature, wholeMessage)
+	if err != nil {
+		logging.Warn("Signature verification error: %+v", err)
+		return false
+	}
+	return verified
 }

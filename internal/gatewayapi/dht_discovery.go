@@ -26,7 +26,7 @@ import (
 // GatewayDHTCIDDiscovery sends a GatewayClientEstablishmentRequest and processes a response.
 func (g *Comms) GatewayDHTCIDDiscovery(contentID cid.ContentID) (bool, error) {
 	msg := messages.ClientDHTDiscoverRequest{}
-	g.addCommonFieldsAndSign(messages.ClientEstablishmentRequestType, msg.ClientCommonRequestFields)
+	g.addCommonFieldsAndSign(messages.ClientEstablishmentRequestType, &msg.ClientCommonRequestFields, msg)
 
 	res := g.gatewayCall(msg).Get("result").MustString()
 	logging.Info("Response from server: %s", res)

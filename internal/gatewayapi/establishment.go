@@ -29,7 +29,7 @@ func (g *Comms) GatewayClientEstablishment(challenge [32]byte) (bool, error) {
 
 	msg := messages.ClientEstablishmentRequest{}
 	msg.Challenge = string(b)
-	g.addCommonFieldsAndSign(messages.ClientEstablishmentRequestType, msg.ClientCommonRequestFields)
+	g.addCommonFieldsAndSign(messages.ClientEstablishmentRequestType, &msg.ClientCommonRequestFields, msg)
 
 	res := g.gatewayCall(msg).Get("result").MustString()
 	logging.Info("Response from server: %s", res)

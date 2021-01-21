@@ -1,4 +1,5 @@
 package contracts
+
 /*
  * Copyright 2020 ConsenSys Software Inc.
  *
@@ -14,16 +15,17 @@ package contracts
  * SPDX-License-Identifier: Apache-2.0
  */
 
- import (
-	 "sync"
- )
+import (
+	"sync"
 
- 
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+)
+
 /*
 * This file is a wrapper for the Gateway Registration Contract. At present it returns
 * hard coded values.
-*/
-
+ */
 
 // GatewayRegistrationContract provides a wrapper for the real Gateway Registration Contract
 type GatewayRegistrationContract struct {
@@ -35,7 +37,8 @@ type GatewayInformation struct {
 	GatewayID [32]byte
 	Hostname string
 	Location *LocationInfo
-	// TODO public key?
+	GatewayRetrievalPublicKey *fcrcrypto.KeyPair
+	GatewayRetrievalPublicKeyVersion *fcrcrypto.KeyVersion
 }
 
 // LocationInfo contains information about the location of a gateway
@@ -64,8 +67,25 @@ func (g *GatewayRegistrationContract) createDummyData() {
 	l := LocationInfo{RegionCode: "A", CountryCode: "AU", SubDivisionCode: "AU-QLD"}
 	var dummyGatewayID [32]byte
 	dummyGatewayID[0] = 0x12
-	gi := GatewayInformation{GatewayID: dummyGatewayID, Hostname: "gateway", Location: &l}
+	gatewayKeyPair, err := fcrcrypto.GenerateRetrievalV1KeyPair()
+	if err != nil {
+		logging.ErrorAndPanic("Error: %s", err)
+	}
+	encodedPubKey, err := gatewayKeyPair.EncodePublicKey()
+	if err != nil {
+		logging.ErrorAndPanic("Error: %s", err)
+	}
+	gatewayPublicKey, err := fcrcrypto.DecodePublicKey(encodedPubKey)
 
+	gatewayPublicKeyVer := fcrcrypto.InitialKeyVersion()
+	
+	gi := GatewayInformation{
+		GatewayID: dummyGatewayID, 
+		Hostname: "gateway", 
+		Location: &l, 
+		GatewayRetrievalPublicKey: gatewayPublicKey,
+		GatewayRetrievalPublicKeyVersion: gatewayPublicKeyVer,
+	}
 	g.gateways = append(g.gateways, gi)
 }
 
