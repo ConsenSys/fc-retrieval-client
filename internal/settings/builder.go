@@ -88,8 +88,8 @@ func (f *BuilderImpl) Build() (*ClientSettings){
 		if (err != nil) {
 			logging.ErrorAndPanic("Settings: Error while generating random retrieval key pair: %s", err)
 		}
-		f.retrievalPrivateKey = pKey
-		f.retrievalPrivateKeyVer = fcrcrypto.DecodeKeyVersion(1)
+		g.retrievalPrivateKey = pKey
+		g.retrievalPrivateKeyVer = fcrcrypto.DecodeKeyVersion(1)
 	} else {
 		g.retrievalPrivateKey = f.retrievalPrivateKey
 		g.retrievalPrivateKeyVer = f.retrievalPrivateKeyVer
