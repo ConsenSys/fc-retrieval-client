@@ -72,7 +72,7 @@ jobs:
           docker_layer_caching: true
       - run: 
           name: Make Client
-          command: make
+          command: make release
       - run:
           name: Make Gateway
           command: make

@@ -9,6 +9,10 @@ REGISTRY?=
 
 # This target (the first target in the build file) is the one that is executed if no 
 # command line args are specified.
+release1: clean useremoteconfig utest build
+
+# Use this target if you are using local packages, or if the build is via circle ci, 
+# and the go.mod and go.sum file should not be updated
 release: clean utest build
 
 # builds a docker image that builds the app and packages it into a minimal docker image
@@ -25,6 +29,9 @@ detectlocal:
 
 detectmisconfig:
 	cd scripts; bash detect-pkg-misconfig.sh
+
+useremoteconfig:
+	cd scripts; bash use-remote-repos.sh
 
 utest:
 	go test ./...
