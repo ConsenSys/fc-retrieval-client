@@ -68,7 +68,7 @@ jobs:
       - run:
           name: Trigger the Build Job
           command: |
-            printf "Setting up variables"# TODO Don't forget to put in your own values
+            printf "Setting up variables"
             ORGANIZATION=ConsenSys
             PROJECT=fc-retrieval-itest
             BRANCH=$CIRCLE_BRANCH
