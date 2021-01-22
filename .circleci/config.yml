@@ -81,7 +81,7 @@ jobs:
             BRANCH=$CIRCLE_BRANCH
             printf "Triggering a $PROJECT build on the $BRANCH branch\n\n"
             printf "API Key: $APIKEY\n"
-            BUILD_INFO=$(curl -X POST https://circleci.com/api/v2/project/$ORGANIZATION/$PROJECT/test_and_release \
+            BUILD_INFO=$(curl -X POST https://circleci.com/api/v2/project/$ORGANIZATION/$PROJECT \
             --header 'Content-Type: application/json' \
             --header 'Accept: application/json' \
             --header "Circle-Token: $APIKEY" \
