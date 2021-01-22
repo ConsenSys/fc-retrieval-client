@@ -65,6 +65,9 @@ jobs:
     docker:
       - image: circleci/golang:1.15
     steps:
+      - getrepobranch:
+          repo: "https://github.com/ConsenSys/fc-retrieval-itest"
+          workdir: "/go/src/github.com/ConsenSys/fc-retrieval-itest"
       - run:
           name: Trigger the Build Job
           command: |
