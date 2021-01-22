@@ -80,11 +80,11 @@ jobs:
             PROJECT=fc-retrieval-itest
             BRANCH=$CIRCLE_BRANCH
             printf "Triggering a $PROJECT build on the $BRANCH branch\n\n"
-            printf "API Key: $APITOKEN"
+            printf "API Key: $APIKEY\n"
             BUILD_INFO=$(curl -X POST https://circleci.com/api/v2/project/$ORGANIZATION/$PROJECT/test_and_release \
             --header 'Content-Type: application/json' \
             --header 'Accept: application/json' \
-            --header "Circle-Token: $APITOKEN" \
+            --header "Circle-Token: $APIKEY" \
             -d '{ "branch": "$BRANCH", "parameters": {"repo-branch":"$CIRCLE_BRANCH"}}'
             )
             printf "\n\nCircle CI call returned: \n$BUILD_INFO\n"
