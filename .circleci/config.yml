@@ -68,15 +68,27 @@ jobs:
       - run:
           name: Trigger the Build Job
           command: |
-            printf "Setting up variables\n"
+            BRANCH=$CIRCLE_BRANCH
+            branch_exists_on_itest=$(git branch -r --list origin/"$CIRCLE_BRANCH")
+            if [ -z "$branch_exists_on_itest" ]; then 
+              BRANCH=main
+            fi
             ORGANIZATION=ConsenSys
             PROJECT=fc-retrieval-itest
             BRANCH=$CIRCLE_BRANCH
             printf "Triggering a $PROJECT build on the $BRANCH branch\n\n"
-            BUILD_INFO=$(curl -X POST -H -d {} \
-                "https://circleci.com/api/v1/project/$ORGANIZATION/$PROJECT/tree/$CIRCLE_BRANCH?circle-token=$APITOKEN")
+            BUILD_INFO=$(curl -X POST https://circleci.com/api/v2/project/$ORGANIZATION/$PROJECT/test_and_release \
+            --header 'Content-Type: application/json' \
+            --header 'Accept: application/json' \
+            --header "Circle-Token: $APITOKEN" \
+            -d '{ "branch": "$BRANCH", "parameters": {"repo-branch":"$CIRCLE_BRANCH"}}'
+            )
             printf "\n\nBuild triggered\n\n"
             printf "Follow the progress of the build on \nhttps://circleci.com/gh/$ORGANIZATION/$PROJECT/tree/$CIRCLE_BRANCH"
+          workdir: "/go/src/github.com/ConsenSys/fc-retrieval-itest"
+
+#            BUILD_INFO=$(curl -X POST -H -d {} \
+#                "https://circleci.com/api/v1/project/$ORGANIZATION/$PROJECT/tree/$CIRCLE_BRANCH?circle-token=$APITOKEN")
 
 
   utest:
