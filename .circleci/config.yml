@@ -80,7 +80,7 @@ jobs:
             ORGANIZATION=ConsenSys
             PROJECT=fc-retrieval-itest
             printf "Triggering a $PROJECT build on the $BRANCH branch, with repo-branch: $CIRCLE_BRANCH\n\n"
-            PARAM={"repox-branch":"$BABA"}
+            PARAM={\"repox-branch\":\"$BABA\"}
             printf "PARAM: $PARAM\n\n"
             BUILD_INFO=$(curl -u $APIKEY: -X POST \
               --header 'Content-Type: application/json' \
