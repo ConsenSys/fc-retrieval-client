@@ -81,10 +81,8 @@ jobs:
             printf "Triggering a $PROJECT build on the $BRANCH branch, with repo-branch: $CIRCLE_BRANCH\n\n"
             CURLBODY="-d '{ \"parameters\":{\"repox-branch\":\"${CIRCLE_BRANCH}\"}}'"
             printf "\n\nCURLBODY: ${CURLBODY}"
-            BUILD_INFO=$(curl -u $APIKEY: -X POST \
-              --header 'Content-Type: application/json' \
-              $CURLBODY \
-              https://circleci.com/api/v2/project/gh/$ORGANIZATION/$PROJECT/pipeline )
+            BUILD_INFO=$(curl https://circleci.com/api/v2/project/gh/$ORGANIZATION/$PROJECT/pipeline -u $APIKEY: -X POST \
+              --header 'Content-Type: application/json' $CURLBODY )
             printf "\n\nCircle CI call returned: \n$BUILD_INFO\n"
             printf "\n\nBuild triggered\n\n"
             printf "Follow the progress of the build on \nhttps://app.circleci.com/pipelines/github/$ORGANIZATION/$PROJECT?branch=$BRANCH"
