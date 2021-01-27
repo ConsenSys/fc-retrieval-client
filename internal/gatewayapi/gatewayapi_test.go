@@ -57,7 +57,7 @@ func TestSigning(t *testing.T) {
 	msg.Challenge = "1234567890abcdef1234567890"
 	method := int32(messages.ClientEstablishmentRequestType)
 	gAPI.addCommonFieldsAndSign(method, &msg.ClientCommonRequestFields, msg);
-	logging.Test("message: %+v", msg)
+	logging.Debug("message: %+v", msg)
 
 	// TODO verify
 	signature := msg.ClientCommonRequestFields.Signature

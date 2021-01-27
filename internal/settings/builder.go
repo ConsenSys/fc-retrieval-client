@@ -61,8 +61,9 @@ func (f *BuilderImpl) SetRetrievalPrivateKey(rPkey *fcrcrypto.KeyPair, ver *fcrc
 func (f *BuilderImpl) Build() (*ClientSettings){
 	var err error
 
-	logging.SetLogLevel(f.logLevel)
-	logging.SetLogTarget(f.logTarget)
+	logging.Init1(f.logLevel, f.logTarget)
+	// logging.SetLogLevel(f.logLevel)
+	// logging.SetLogTarget(f.logTarget)
 
 	g := ClientSettings{}
 	g.establishmentTTL = f.establishmentTTL
