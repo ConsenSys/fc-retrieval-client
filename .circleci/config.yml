@@ -89,16 +89,6 @@ jobs:
             printf "Follow the progress of the build on \nhttps://app.circleci.com/pipelines/github/$ORGANIZATION/$PROJECT?branch=$BRANCH"
           workdir: "/go/src/github.com/ConsenSys/fc-retrieval-itest"
 
-
-
-            # CURLCMD="curl -u $APIKEY: -X POST --header 'Content-Type:application/json' -d '{\"parameters\":{\"repo-branch\":\"${CIRCLE_BRANCH}\"}}' https://circleci.com/api/v2/project/gh/$ORGANIZATION/$PROJECT/pipeline"
-            # echo "Curl Command: ${CURLCMD}"
-            # BUILD_INFO=$(${CURLCMD})
-
-#            CURLBODY="-d '{\"parameters\":{\"repox-branch\":\"${CIRCLE_BRANCH}\"}}'"
-#            printf "\n\nCURLBODY: ${CURLBODY}"
-
-
   utest:
     docker:
       # specify the version
@@ -132,9 +122,8 @@ workflows:
   version: 2
   test_and_release:
     jobs:
-#      - utest
-#      - release
-      - triggerItest
+      - utest
+      - release
 
 #      - triggerItest:
 #          requires:
