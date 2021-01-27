@@ -79,9 +79,10 @@ jobs:
             ORGANIZATION=ConsenSys
             PROJECT=fc-retrieval-itest
             printf "Triggering a $PROJECT build on the $BRANCH branch, with repo-branch: $CIRCLE_BRANCH\n\n"
-            CURLCMD="curl -u $APIKEY: -X POST --header 'Content-Type:application/json' -d '{\"parameters\":{\"repo-branch\":\"${CIRCLE_BRANCH}\"}}' https://circleci.com/api/v2/project/gh/$ORGANIZATION/$PROJECT/pipeline"
-            echo "Curl Command: ${CURLCMD}"
-            BUILD_INFO=$(${CURLCMD})
+            BUILD_INFO=$(curl -u $APIKEY: -X POST \
+              --header 'Content-Type: application/json' \
+              -d '{ "parameters": {"repox-branch":\"${CIRCLE_BRANCH}\"}}' \
+              https://circleci.com/api/v2/project/gh/$ORGANIZATION/$PROJECT/pipeline )
             printf "\n\nCircle CI call returned: \n$BUILD_INFO\n"
             printf "\n\nBuild triggered\n\n"
             printf "Follow the progress of the build on \nhttps://app.circleci.com/pipelines/github/$ORGANIZATION/$PROJECT?branch=$BRANCH"
@@ -95,6 +96,9 @@ jobs:
 #              -d '{ "parameters": {"repox-branch":"${CIRCLE_BRANCH}"}}' \
 #              https://circleci.com/api/v2/project/gh/$ORGANIZATION/$PROJECT/pipeline )
 
+            # CURLCMD="curl -u $APIKEY: -X POST --header 'Content-Type:application/json' -d '{\"parameters\":{\"repo-branch\":\"${CIRCLE_BRANCH}\"}}' https://circleci.com/api/v2/project/gh/$ORGANIZATION/$PROJECT/pipeline"
+            # echo "Curl Command: ${CURLCMD}"
+            # BUILD_INFO=$(${CURLCMD})
 
 
   utest:
