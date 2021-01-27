@@ -76,9 +76,9 @@ jobs:
             if [ -z "$branch_exists_on_itest" ]; then 
               BRANCH=main
             fi
+            printf "Using branch for itest: $BRANCH, with repo-branch: $CIRCLE_BRANCH"
             ORGANIZATION=ConsenSys
             PROJECT=fc-retrieval-itest
-            BRANCH=$CIRCLE_BRANCH
             printf "Triggering a $PROJECT build on the $BRANCH branch\n\n"
             BUILD_INFO=$(curl -u $APIKEY: -X POST \
               --header 'Content-Type: application/json' \
