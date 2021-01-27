@@ -79,7 +79,7 @@ jobs:
             ORGANIZATION=ConsenSys
             PROJECT=fc-retrieval-itest
             printf "Triggering a $PROJECT build on the $BRANCH branch, with repo-branch: $CIRCLE_BRANCH\n\n"
-            CURLBODY="-d '{ \"parameters\": {\"repox-branch\":\"${CIRCLE_BRANCH}\"}}'"
+            CURLBODY="-d '{ \"parameters\":{\"repox-branch\":\"${CIRCLE_BRANCH}\"}}'"
             printf "\n\nCURLBODY: ${CURLBODY}"
             BUILD_INFO=$(curl -u $APIKEY: -X POST \
               --header 'Content-Type: application/json' \
