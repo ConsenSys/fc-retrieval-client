@@ -78,7 +78,7 @@ jobs:
             fi
             ORGANIZATION=ConsenSys
             PROJECT=fc-retrieval-itest
-            printf "Triggering a $PROJECT build on the $BRANCH branch, with repo-branch: $CIRCLE_BRANCH"\n\n"
+            printf "Triggering a $PROJECT build on the $BRANCH branch, with repo-branch: $CIRCLE_BRANCH\n\n"
             BUILD_INFO=$(curl -u $APIKEY: -X POST \
               --header 'Content-Type: application/json' \
               -d '{ "branch": "$BRANCH", "parameters": {"repo-branch":"$CIRCLE_BRANCH"}}' \
