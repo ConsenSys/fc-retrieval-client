@@ -81,7 +81,7 @@ jobs:
             printf "Triggering a $PROJECT build on the $BRANCH branch, with repo-branch: $CIRCLE_BRANCH\n\n"
             BUILD_INFO=$(curl -u $APIKEY: -X POST \
               --header 'Content-Type: application/json' \
-              -d '{ "branch": "$BRANCH", "parameters": {"repo-branch":"$CIRCLE_BRANCH"}}' \
+              -d '{ "parameters": {"repo-branch":"$CIRCLE_BRANCH"}}' \
               https://circleci.com/api/v2/project/gh/$ORGANIZATION/$PROJECT/pipeline )
             printf "\n\nCircle CI call returned: \n$BUILD_INFO\n"
             printf "\n\nBuild triggered\n\n"
