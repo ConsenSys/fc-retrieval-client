@@ -33,6 +33,9 @@ detectmisconfig:
 useremoteconfig:
 	cd scripts; bash use-remote-repos.sh
 
+uselocal:
+	cd scripts; bash use-local-repos.sh
+
 utest:
 	go test ./...
 
