@@ -36,6 +36,7 @@ type GatewayRegistrationContract struct {
 type GatewayInformation struct {
 	GatewayID [32]byte
 	Hostname string
+	HostPort int
 	Location *LocationInfo
 	GatewayRetrievalPublicKey *fcrcrypto.KeyPair
 	GatewayRetrievalPublicKeyVersion *fcrcrypto.KeyVersion
@@ -81,7 +82,8 @@ func (g *GatewayRegistrationContract) createDummyData() {
 	
 	gi := GatewayInformation{
 		GatewayID: dummyGatewayID, 
-		Hostname: "localhost:8000", 
+		Hostname: "localhost", 
+		HostPort: 8000,
 		Location: &l, 
 		GatewayRetrievalPublicKey: gatewayPublicKey,
 		GatewayRetrievalPublicKeyVersion: gatewayPublicKeyVer,

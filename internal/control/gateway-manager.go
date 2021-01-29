@@ -93,7 +93,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 	gatewayInfo := g.gatewayRegistrationContract.GetGateways(10)
 	logging.Info("Gateway Manager: GetGateways returned %d gateways", len(gatewayInfo))
 	for _, info := range gatewayInfo {
-		logging.Info("Setting-up comms with: %s", info.Hostname)
+		logging.Info("Setting-up comms with: %s:%d", info.Hostname, info.HostPort)
 		comms, err := gatewayapi.NewGatewayAPIComms(&info, &g.settings)
 		if err != nil {
 			panic(err)

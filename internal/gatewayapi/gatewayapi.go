@@ -44,6 +44,7 @@ type Comms struct {
 // NewGatewayAPIComms creates a connection with a gateway
 func NewGatewayAPIComms(gatewayInfo *contracts.GatewayInformation, settings *settings.ClientSettings) (*Comms, error){
 	host := gatewayInfo.Hostname
+	port := gatewayInfo.HostPort
 
 	// Create the constant array.
 	if (clientAPIProtocolSupported == nil) {
@@ -59,7 +60,7 @@ func NewGatewayAPIComms(gatewayInfo *contracts.GatewayInformation, settings *set
 	}
 
 	netComms := Comms{}
-	netComms.apiURL = apiURLStart + host + apiURLEnd
+	netComms.apiURL = apiURLStart + host + ":" + port + apiURLEnd
 	netComms.gatewayPubKey = gatewayInfo.GatewayRetrievalPublicKey
 	netComms.gatewayPubKeyVer = gatewayInfo.GatewayRetrievalPublicKeyVersion
 	netComms.settings = settings
