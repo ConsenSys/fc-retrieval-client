@@ -34,8 +34,6 @@ check_repo() {
     echo "$1 repo branch: $OTHER_REPO_BRANCH"
     BRANCH_EXISTS=`git branch -r --list origin/$CLIENT_BRANCH`
 
-    cd $CLIENT_DIR
-
     if [ $CLIENT_BRANCH != $OTHER_REPO_BRANCH ]; then 
         echo "client and $1 branch do not match"
         if [ -n "$BRANCH_EXISTS" ]; then
@@ -44,11 +42,14 @@ check_repo() {
         fi
 
         echo "Calling go get to use main on $1"
+        cd $CLIENT_DIR
         go get github.com/ConsenSys/fc-retrieval-$1@main
     else
         echo client and $1 branch match
-        echo "Calling go get to use $OTHER_REPO_BRANCH on fc-retrieval-$1"
-        go get github.com/ConsenSys/fc-retrieval-$1@$CLIENT_BRANCH
+        GITHASH=`git rev-parse $ITEST_BRANCH`
+        echo "Calling go get to use $OTHER_REPO_BRANCH on fc-retrieval-$1 ($GITHASH)"
+        cd $CLIENT_DIR
+        go get -u -t -v github.com/ConsenSys/fc-retrieval-$1@$GITHASH
     fi
 }
 
