@@ -36,8 +36,8 @@ func CreateSettings() (*BuilderImpl) {
 
 // SetLogging sets the log level and target.
 func (f *BuilderImpl) SetLogging(logLevel string, logTarget string) {
-	f.logLevel = defaultLogLevel
-	f.logTarget = defaultLogTarget
+	f.logLevel = logLevel
+	f.logTarget = logTarget
 }
 
 // SetEstablishmentTTL sets the time to live for the establishment message between client and gateway.

@@ -9,7 +9,7 @@ const (
 	defaultEstablishmentTTL = int64(100)
 
 	// DefaultLogLevel is the default amount of logging to show.
-	defaultLogLevel = "TRACE"
+	defaultLogLevel = "trace"
 
 	// DefaultLogTarget is the default output location of log output.
     defaultLogTarget = "STDOUT"
