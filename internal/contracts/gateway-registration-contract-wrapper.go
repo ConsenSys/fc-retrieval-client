@@ -81,7 +81,7 @@ func (g *GatewayRegistrationContract) createDummyData() {
 	
 	gi := GatewayInformation{
 		GatewayID: dummyGatewayID, 
-		Hostname: "localhost", 
+		Hostname: "localhost:8000", 
 		Location: &l, 
 		GatewayRetrievalPublicKey: gatewayPublicKey,
 		GatewayRetrievalPublicKeyVersion: gatewayPublicKeyVer,
