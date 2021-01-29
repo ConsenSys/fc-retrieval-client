@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"strconv"
 
 	"github.com/ConsenSys/fc-retrieval-client/internal/contracts"
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
@@ -60,7 +61,7 @@ func NewGatewayAPIComms(gatewayInfo *contracts.GatewayInformation, settings *set
 	}
 
 	netComms := Comms{}
-	netComms.apiURL = apiURLStart + host + ":" + port + apiURLEnd
+	netComms.apiURL = apiURLStart + host + ":" + strconv.Itoa(port) + apiURLEnd
 	netComms.gatewayPubKey = gatewayInfo.GatewayRetrievalPublicKey
 	netComms.gatewayPubKeyVer = gatewayInfo.GatewayRetrievalPublicKeyVersion
 	netComms.settings = settings
