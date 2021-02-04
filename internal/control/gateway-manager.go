@@ -72,10 +72,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 	logging.Info("Gateway Manager: Management thread started")
 
 	// Call this once each hour or maybe day.
-	gateways, err := register.GetRegisteredGateways("http://localhost:8080")
-
-	fmt.Printf("Registerd Gateways %+v", gateways)
-
+	gateways, err := register.GetRegisteredGateways("http://fc-retrieval-register:8090")
 	if err != nil {
 		logging.Error("Unable to get registered gateways: %v", err)
 	}
@@ -83,9 +80,9 @@ func (g *GatewayManager) gatewayManagerRunner() {
 
 	// gatewayInfo := g.gatewayRegistrationContract.GetGateways(10)
 	logging.Info("Gateway Manager: GetGateways returned %d gateways", len(gateways))
-	for _, info := range gateways {
+	for _, gateway := range gateways {
 
-		fmt.Printf("info %+v", info)
+		fmt.Printf("Gateway ========> %+v\n", gateway)
 		// comms, err := gatewayapi.NewGatewayAPIComms(info.Hostname, g.settings.ClientID())
 		// if err != nil {
 		// 	panic(err)
