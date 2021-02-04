@@ -16,27 +16,26 @@ package gatewayapi
  */
 
 import (
-//	"encoding/base64"
+	//	"encoding/base64"
 
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cid"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrmessages"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/messages"
 )
 
 // GatewayDHTCIDDiscovery sends a GatewayClientEstablishmentRequest and processes a response.
 func (g *Comms) GatewayDHTCIDDiscovery(contentID cid.ContentID) (bool, error) {
- 	args := make(map[string]interface{})
+	args := make(map[string]interface{})
 
-// TODO
+	// TODO
 
 	// b := make([]byte, base64.StdEncoding.EncodedLen(len(challenge)))
 	// base64.StdEncoding.Encode(b, challenge[:])
 	// args["challenge"] = string(b)
 	// args["ttl"] = ttl
 
-	res := g.gatewayCall(messages.ClientDHTDiscoverRequestType, args).Get("result").MustString()
+	res := g.gatewayCall(fcrmessages.ClientDHTDiscoverRequestType, args).Get("result").MustString()
 	logging.Info("Response from server: %s", res)
 
 	return true, nil
 }
-

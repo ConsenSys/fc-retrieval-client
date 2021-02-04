@@ -13,8 +13,6 @@ import (
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 )
 
-
-
 // SettingsBuilder holds the library configuration
 type SettingsBuilder interface {
 	// SetLogging sets the log level and target.
@@ -24,48 +22,42 @@ type SettingsBuilder interface {
 	SetEstablishmentTTL(ttl int64)
 
 	// SetBlockchainPrivateKey sets the blockchain private key.
-	SetBlockchainPrivateKey(bcPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg)
+	SetBlockchainPrivateKey(bcPkey *ecdsa.PrivateKey, alg *fcrcrypto.KeySigAlg)
 
 	// SetRetrievalPrivateKey sets the retrieval private key.
-	SetRetrievalPrivateKey(rPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg, ver *fcrcrypto.KeyVersion)
+	SetRetrievalPrivateKey(rPkey *ecdsa.PrivateKey, alg *fcrcrypto.KeySigAlg, ver *fcrcrypto.KeyVersion)
 
 	// Build creates a settings object and initialises the logging system.
-	Build() (*Settings)
+	Build() *Settings
 }
-
 
 // Settings holds the library configuration
 type Settings interface {
-	EstablishmentTTL() 		  int64
-	ClientID() 				  *nodeid.NodeID
+	EstablishmentTTL() int64
+	ClientID() *nodeid.NodeID
 
-	BlockchainPrivateKey()    *ecdsa.PrivateKey 
-	BlockchainPrivateKeyAlg() *fcrcrypto.SigAlg
+	BlockchainPrivateKey() *ecdsa.PrivateKey
+	BlockchainPrivateKeyAlg() *fcrcrypto.KeySigAlg
 
-	RetrievalPrivateKey()	  *ecdsa.PrivateKey
-	RetrievalPrivateKeyVer()  *fcrcrypto.KeyVersion
-	RetrievalPrivateKeyAlg()  *fcrcrypto.SigAlg
+	RetrievalPrivateKey() *ecdsa.PrivateKey
+	RetrievalPrivateKeyVer() *fcrcrypto.KeyVersion
+	RetrievalPrivateKeyAlg() *fcrcrypto.KeySigAlg
 }
 
-
-
 // CreateSettings loads up default settings
-func CreateSettings() (SettingsBuilder) {
+func CreateSettings() SettingsBuilder {
 	f := newBuilderImpl()
 	builder := SettingsBuilder(f)
 	return builder
 }
-
-
 
 type settingsBuilderImpl struct {
 	impl *settings.BuilderImpl
 }
 
 func newBuilderImpl() settingsBuilderImpl {
-  	return settingsBuilderImpl{settings.CreateSettings()}
+	return settingsBuilderImpl{settings.CreateSettings()}
 }
-
 
 // SetLogging sets the log level and target.
 func (f settingsBuilderImpl) SetLogging(logLevel string, logTarget string) {
@@ -78,12 +70,12 @@ func (f settingsBuilderImpl) SetEstablishmentTTL(ttl int64) {
 }
 
 // SetBlockchainPrivateKey sets the blockchain private key.
-func (f settingsBuilderImpl) SetBlockchainPrivateKey(bcPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg) {
+func (f settingsBuilderImpl) SetBlockchainPrivateKey(bcPkey *ecdsa.PrivateKey, alg *fcrcrypto.KeySigAlg) {
 	f.impl.SetBlockchainPrivateKey(bcPkey, alg)
 }
 
 // SetRetrievalPrivateKey sets the retrieval private key.
-func (f settingsBuilderImpl) SetRetrievalPrivateKey(rPkey *ecdsa.PrivateKey, alg *fcrcrypto.SigAlg, ver *fcrcrypto.KeyVersion) {
+func (f settingsBuilderImpl) SetRetrievalPrivateKey(rPkey *ecdsa.PrivateKey, alg *fcrcrypto.KeySigAlg, ver *fcrcrypto.KeyVersion) {
 	f.impl.SetRetrievalPrivateKey(rPkey, alg, ver)
 }
 
@@ -93,4 +85,3 @@ func (f settingsBuilderImpl) Build() *Settings {
 	set := Settings(clientSettings)
 	return &set
 }
-

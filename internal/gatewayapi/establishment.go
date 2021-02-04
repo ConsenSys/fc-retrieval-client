@@ -18,22 +18,21 @@ package gatewayapi
 import (
 	"encoding/base64"
 
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrmessages"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/messages"
 )
 
 // GatewayClientEstablishment sends a GatewayClientEstablishmentRequest and processes a response.
 func (g *Comms) GatewayClientEstablishment(ttl int64, challenge [32]byte) (bool, error) {
- 	args := make(map[string]interface{})
+	args := make(map[string]interface{})
 
 	b := make([]byte, base64.StdEncoding.EncodedLen(len(challenge)))
 	base64.StdEncoding.Encode(b, challenge[:])
 	args["challenge"] = string(b)
 	args["ttl"] = ttl
 
-	res := g.gatewayCall(messages.ClientEstablishmentRequestType, args).Get("result").MustString()
+	res := g.gatewayCall(fcrmessages.ClientEstablishmentRequestType, args).Get("result").MustString()
 	logging.Info("Response from server: %s", res)
 
 	return true, nil
 }
-

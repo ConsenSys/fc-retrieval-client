@@ -4,15 +4,15 @@ services:
     image: fc-retrieval-client:v1
     container_name: client
     ports:
-      - "80:80"
+      - "3000:80"
       - "443:443"
       - "8090:8090"
       - "8091:8091"
     networks:
       - shared
-    depends_on: 
+    depends_on:
       - gateway
-                
+
   gateway:
     image: fc-retrieval-gateway:v1
     container_name: gateway
@@ -20,13 +20,13 @@ services:
       - shared
 
   dbg:
-   image: busybox
-   #image: radial/busyboxplus:curl
-   container_name: dbg
-   stdin_open: true
-   tty: true
-   networks:
-     - shared
-     
+    image: busybox
+    #image: radial/busyboxplus:curl
+    container_name: dbg
+    stdin_open: true
+    tty: true
+    networks:
+      - shared
+
 networks:
   shared:
