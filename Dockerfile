@@ -1,7 +1,6 @@
 # Copyright (C) 2020 ConsenSys Software Inc
 # Docker file used to build code.
-
-FROM golang
+FROM golang:1.15-alpine as client
 
 # Add code to be run.
 # Also grab dependancies from source directory, to improve build speed.
