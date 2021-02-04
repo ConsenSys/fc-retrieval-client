@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210203085747-d5d8d8854d6e
-	github.com/ConsenSys/fc-retrieval-register v0.0.0-20210203090301-3a488e087b36
+	github.com/ConsenSys/fc-retrieval-register v0.0.0-20210204110814-ed78769e295a
 	github.com/bitly/go-simplejson v0.5.0
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/kr/pretty v0.2.1 // indirect

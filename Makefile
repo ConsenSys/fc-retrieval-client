@@ -39,3 +39,9 @@ clean:
 # Alays assume these targets are out of date.
 .PHONY: clean itest utest build release push
 
+dev:
+	docker-compose -f docker-compose.dev.yml up
+
+build-dev:
+	go build -v cmd/client/integration-tests.go
+

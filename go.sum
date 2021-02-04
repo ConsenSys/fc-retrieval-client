@@ -22,6 +22,8 @@ github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210203085747-d5d8d8854d6e/go.
 github.com/ConsenSys/fc-retrieval-register v0.0.0-20210201121311-0b8f3dc49cf5/go.mod h1:Xs9qRhBLb+QPEWwMwYHBDcD1Ndun5kDYWfXNKzuIon4=
 github.com/ConsenSys/fc-retrieval-register v0.0.0-20210203090301-3a488e087b36 h1:iKP3S/5FzhbOXsAAY93gdHF5mkE19GAckRind7bszXA=
 github.com/ConsenSys/fc-retrieval-register v0.0.0-20210203090301-3a488e087b36/go.mod h1:Xs9qRhBLb+QPEWwMwYHBDcD1Ndun5kDYWfXNKzuIon4=
+github.com/ConsenSys/fc-retrieval-register v0.0.0-20210204110814-ed78769e295a h1:dAmXjhLnJK7ASekDU9L7+Be4ozD04GluWkHBMthxv6c=
+github.com/ConsenSys/fc-retrieval-register v0.0.0-20210204110814-ed78769e295a/go.mod h1:Xs9qRhBLb+QPEWwMwYHBDcD1Ndun5kDYWfXNKzuIon4=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/PuerkitoBio/purell v1.1.0/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
 github.com/PuerkitoBio/purell v1.1.1/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
