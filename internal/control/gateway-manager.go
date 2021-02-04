@@ -23,7 +23,6 @@ import (
 	"github.com/ConsenSys/fc-retrieval-register/pkg/register"
 
 	"github.com/ConsenSys/fc-retrieval-client/internal/contracts"
-	"github.com/ConsenSys/fc-retrieval-client/internal/gateway"
 	"github.com/ConsenSys/fc-retrieval-client/internal/gatewayapi"
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 )
@@ -73,8 +72,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 	logging.Info("Gateway Manager: Management thread started")
 
 	// Call this once each hour or maybe day.
-	// g.gatewayRegistrationContract.FetchUpdatedInformationFromContract()
-	gateways, err := gateway.GetRegisteredGateways()
+	gateways, err := register.GetRegisteredGateways("http://localhost:8080")
 
 	fmt.Printf("Registerd Gateways %+v", gateways)
 
