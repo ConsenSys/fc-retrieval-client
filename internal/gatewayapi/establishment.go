@@ -19,19 +19,31 @@ import (
 	"encoding/base64"
 
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/messages"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrmessages"
 )
 
 // GatewayClientEstablishment sends a GatewayClientEstablishmentRequest and processes a response.
-func (g *Comms) GatewayClientEstablishment(challenge [32]byte) (bool, error) {
+// Return true if the establishment request was successful.
+func (c *Comms) GatewayClientEstablishment(challenge [32]byte) (bool, error) {
 	b := make([]byte, base64.StdEncoding.EncodedLen(len(challenge)))
 	base64.StdEncoding.Encode(b, challenge[:])
 
-	msg := messages.ClientEstablishmentRequest{}
-	msg.Challenge = string(b)
-	g.addCommonFieldsAndSign(messages.ClientEstablishmentRequestType, &msg.ClientCommonRequestFields, msg)
+	request, err := fcrmessages.EncodeClientEstablishmentRequest(c.settings.ClientID(), string(b), c.settings.EstablishmentTTL())
+	if err != nil {
+		logging.Error("Error encoding Client Establishment Request: %+v", err)
+		return false, err
+	}
 
-	res := g.gatewayCall(msg).Get("result").MustString()
+	if request.SignMessage(func(msg interface{}) (string, error) {
+		return fcrcrypto.SignMessage(c.settings.RetrievalPrivateKey(), c.settings.RetrievalPrivateKeyVer(), msg)
+	}) != nil {
+		logging.Error("Error signing message for Client Establishment Request: %+v", err)
+		return false, err
+	}
+
+	res := c.gatewayCall(request).Get("result").MustString()
+	// TODO interpret the response.
 	logging.Info("Response from server: %s", res)
 
 	return true, nil

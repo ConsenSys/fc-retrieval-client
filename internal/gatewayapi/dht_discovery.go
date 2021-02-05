@@ -20,15 +20,28 @@ import (
 
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cid"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/messages"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrmessages"
 )
 
 // GatewayDHTCIDDiscovery sends a GatewayClientEstablishmentRequest and processes a response.
-func (g *Comms) GatewayDHTCIDDiscovery(contentID cid.ContentID) (bool, error) {
-	msg := messages.ClientDHTDiscoverRequest{}
-	g.addCommonFieldsAndSign(messages.ClientEstablishmentRequestType, &msg.ClientCommonRequestFields, msg)
+func (c *Comms) GatewayDHTCIDDiscovery(contentID *cid.ContentID, nonce int64, numDHT int64, incrementalResults bool) (bool, error) {
+	request, err := fcrmessages.EncodeClientDHTDiscoverRequest(
+		contentID, nonce, c.settings.EstablishmentTTL(), numDHT, incrementalResults)
+	if err != nil {
+		logging.Error("Error encoding Client DHT Discover Request: %+v", err)
+		return false, err
+	}
 
-	res := g.gatewayCall(msg).Get("result").MustString()
+	if request.SignMessage(func(msg interface{}) (string, error) {
+		return fcrcrypto.SignMessage(c.settings.RetrievalPrivateKey(), c.settings.RetrievalPrivateKeyVer(), msg)
+	}) != nil {
+		logging.Error("Error signing message for Client Establishment Request: %+v", err)
+		return false, err
+	}
+
+	res := c.gatewayCall(request).Get("result").MustString()
+	// TODO interpret the response.
 	logging.Info("Response from server: %s", res)
 
 	return true, nil
