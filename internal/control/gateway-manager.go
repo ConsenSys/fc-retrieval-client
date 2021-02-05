@@ -18,24 +18,27 @@ package control
 import (
 	"sync"
 
-	"github.com/ConsenSys/fc-retrieval-client/internal/contracts"
-	"github.com/ConsenSys/fc-retrieval-client/internal/gatewayapi"
-	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-register/pkg/register"
+
+	"github.com/ConsenSys/fc-retrieval-client/internal/gatewayapi"
+	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 )
 
 // GatewayManager managers the pool of gateways and the connections to them.
 type GatewayManager struct {
 	settings settings.ClientSettings
-	gatewayRegistrationContract *contracts.GatewayRegistrationContract 
 	gateways []ActiveGateway
 	gatewaysLock   sync.RWMutex
+
+	// Registered Gateways
+	RegisteredGateways []register.GatewayRegister
 }
 
 // ActiveGateway contains information for a single gateway
 type ActiveGateway struct {
-	info contracts.GatewayInformation
+	info register.GatewayRegister
 	comms 		*gatewayapi.Comms
 
 }
@@ -67,16 +70,10 @@ func GetGatewayManager(settings ...settings.ClientSettings) *GatewayManager {
 func startGatewayManager(settings settings.ClientSettings) {
 	g := GatewayManager{}
 	g.settings = settings
-	g.gatewayRegistrationContract = contracts.GetGatewayRegistrationContract() 
 
 	singleInstance = &g
 
-//	errChan := make(chan error, 1)
-//	go g.gatewayManagerRunner()
 	g.gatewayManagerRunner()
-
-	// TODO what should be done with error that is returned possibly in the future?
-	// TODO would it be better just to have gatewayManagerRunner panic after emitting a log?
 }
 
 func (g *GatewayManager) gatewayManagerRunner() {
@@ -84,17 +81,17 @@ func (g *GatewayManager) gatewayManagerRunner() {
 
 
 	// Call this once each hour or maybe day.
-	g.gatewayRegistrationContract.FetchUpdatedInformationFromContract()
+	gateways, err := register.GetRegisteredGateways("http://register:8090")
+	if err != nil {
+		logging.Error("Unable to get registered gateways: %v", err)
+	}
+	g.RegisteredGateways = gateways
 
-	// TODO this loop is where the managing of gateways that the client is using
-	// happens.
-
-	// TODO given we are using dummy data, just grab the gateway information once.
-	gatewayInfo := g.gatewayRegistrationContract.GetGateways(10)
-	logging.Info("Gateway Manager: GetGateways returned %d gateways", len(gatewayInfo))
-	for _, info := range gatewayInfo {
-		logging.Info("Setting-up comms with: %s:%d", info.Hostname, info.HostPort)
-		comms, err := gatewayapi.NewGatewayAPIComms(&info, &g.settings)
+	// TODO this loop is where the managing of gateways that the client is using happens.
+	logging.Info("Gateway Manager: GetGateways returned %d gateways", len(gateways))
+	for _, gateway := range gateways {
+		logging.Info("Setting-up comms with: %+v", gateway)
+		comms, err := gatewayapi.NewGatewayAPIComms(gateway, &g.settings)
 		if err != nil {
 			panic(err)
 		} 
@@ -104,7 +101,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 		fcrcrypto.GeneratePublicRandomBytes(challenge[:])
 		comms.GatewayClientEstablishment(challenge)
 
-		activeGateway := ActiveGateway{info, comms}
+		activeGateway := ActiveGateway{gateway, comms}
 		g.gateways = append(g.gateways, activeGateway)
 	}
 

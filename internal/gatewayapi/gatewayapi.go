@@ -7,12 +7,11 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"strconv"
 
-	"github.com/ConsenSys/fc-retrieval-client/internal/contracts"
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-register/pkg/register"
 	"github.com/bitly/go-simplejson"
 )
 
@@ -42,9 +41,8 @@ type Comms struct {
 }
 
 // NewGatewayAPIComms creates a connection with a gateway
-func NewGatewayAPIComms(gatewayInfo *contracts.GatewayInformation, settings *settings.ClientSettings) (*Comms, error){
-	host := gatewayInfo.Hostname
-	port := gatewayInfo.HostPort
+func NewGatewayAPIComms(gatewayInfo *register.GatewayRegister, settings *settings.ClientSettings) (*Comms, error){
+	hostAndPort := gatewayInfo.Address
 
 	// Create the constant array.
 	if (clientAPIProtocolSupported == nil) {
@@ -53,16 +51,19 @@ func NewGatewayAPIComms(gatewayInfo *contracts.GatewayInformation, settings *set
 	}
 
 	// Check that the host name is valid
-	err := validateHostName(host)
+	err := validateHostName(hostAndPort)
 	if (err != nil) {
 		logging.Error("Host name invalid: %s", err. Error())
 		return nil, err
 	}
 
 	netComms := Comms{}
-	netComms.apiURL = apiURLStart + host + ":" + strconv.Itoa(port) + apiURLEnd
-	netComms.gatewayPubKey = gatewayInfo.GatewayRetrievalPublicKey
-	netComms.gatewayPubKeyVer = gatewayInfo.GatewayRetrievalPublicKeyVersion
+	netComms.apiURL = apiURLStart + hostAndPort + apiURLEnd
+	netComms.gatewayPubKey, err = fcrcrypto.DecodePublicKey(gatewayInfo.SigingKey)
+	if err != nil {
+		return nil, err
+	}
+	netComms.gatewayPubKeyVer = fcrcrypto.DecodeKeyVersion(1) // TODO gatewayInfo.GatewayRetrievalPublicKeyVersion
 	netComms.settings = settings
 	return &netComms, nil
 }
