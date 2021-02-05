@@ -54,7 +54,7 @@ jobs:
           repo: "https://github.com/ConsenSys/fc-retrieval-gateway"
           workdir: "/go/src/github.com/ConsenSys/fc-retrieval-gateway"
       # Ensure go.mod is configured correctly
-      - run: make detectmisconfig
+      # - run: make detectmisconfig
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
@@ -114,7 +114,7 @@ jobs:
           working_directory: /go/src/github.com/ConsenSys/
 
       # Ensure go.mod is configured correctly
-      - run: make detectmisconfig
+      # - run: make detectmisconfig
       # Run unit tests
       - run: make utest
 
