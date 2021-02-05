@@ -16,3 +16,5 @@
 
 # temp file created which checking go.mod file configuration.
 go.mod.temp
+
+.env

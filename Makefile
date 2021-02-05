@@ -5,7 +5,7 @@
 # Usage:
 #   [VERSION=v3] [REGISTRY="gcr.io/google_containers"] make build
 VERSION?=dev
-REGISTRY?=
+REGISTRY?=consensys/
 
 # This target (the first target in the build file) is the one that is executed if no 
 # command line args are specified.

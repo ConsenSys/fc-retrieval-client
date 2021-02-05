@@ -1,8 +1,9 @@
 version: "3.8"
 services:
   client:
-    image: fc-retrieval-client:dev
+    image: consensys/fc-retrieval-client:dev
     container_name: client
+    command: /client --client-id=${CLIENT_ID} --ttl=${ESTABLISHMENT_TTL} --log-level=${LOG_LEVEL}
     ports:
       - "80:80"
       - "443:443"
@@ -11,14 +12,8 @@ services:
       - "8092:8092"
     networks:
       - shared
-    depends_on: 
-      - gateway
-                
-  gateway:
-    image: fc-retrieval-gateway:dev
-    container_name: gateway
-    networks:
-      - shared
+    env_file:
+      - .env
 
   dbg:
    image: busybox
@@ -31,3 +26,5 @@ services:
      
 networks:
   shared:
+    name: shared
+    external: true

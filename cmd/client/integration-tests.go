@@ -18,23 +18,30 @@ package main
 import (
 	"time"
 
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-
+	"github.com/ConsenSys/fc-retrieval-client/config"
 	"github.com/ConsenSys/fc-retrieval-client/pkg/fcrclient"
 )
 
 func main() {
+	conf := config.NewConfig()
+	logging.Init(conf)
+	logging.Debug("Using arg client-id=%v", conf.GetString("CLIENT_ID"))
+	logging.Debug("Using arg ttl=%v", conf.GetInt("ESTABLISHMENT_TTL"))
+	logging.Debug("Using arg log-level=%v", conf.GetString("LOG_LEVEL"))
+	logging.Debug("Using arg log-target=%v", conf.GetString("LOG_TARGET"))
+
 	// TODO switch this to logging.Test when available
-	logging.Error("Integration Test: Start")
+	logging.Info("Integration Test: Start")
 	integrationTests()
-	// TODO switch this to logging.Test when available
-	logging.Error("Integration Test: End")
+	logging.Info("Integration Test: End")
 }
 
 func integrationTests() {
 	// TODO switch this to logging.Test when available
-	logging.Error(" Wait two seconds for the gateway to deploy and be ready for requests")
+	logging.Info(" Wait two seconds for the gateway to deploy and be ready for requests")
 	time.Sleep(2 * time.Second)
 
 	var pieceCIDToFind [32]byte
@@ -53,6 +60,6 @@ func integrationTests() {
 	client := fcrclient.InitFilecoinRetrievalClient(*conf)
 	offers := client.FindBestOffers(pieceCIDToFind, 1000, 1000)
 	// TODO switch this to logging.Test when available
-	logging.Error("Offers: %+v\n", offers)
+	logging.Info("Offers: %+v\n", offers)
 	client.Shutdown()
 }

@@ -13,14 +13,8 @@ RUN go get -d -v github.com/ConsenSys/fc-retrieval-client/cmd/client
 # Do a full compile of app and dependancies, forcing static linking.
 RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o /go/bin/client github.com/ConsenSys/fc-retrieval-client/cmd/client
 
-
-# Add the settings file needed at runtime to the bin directory so it
-# can be accessed by the runtime Dockerfile.
-COPY settings.json /go/bin/settings.json
-
 # Pull build gateway into a second stage deploy alpine container
 FROM alpine:latest
-COPY --from=builder /go/bin/settings.json /etc/client/
 COPY --from=builder /go/bin/client /client
 
 # Run the binary when the container starts.
