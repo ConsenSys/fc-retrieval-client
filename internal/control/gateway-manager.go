@@ -91,7 +91,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 	logging.Info("Gateway Manager: GetGateways returned %d gateways", len(gateways))
 	for _, gateway := range gateways {
 		logging.Info("Setting-up comms with: %+v", gateway)
-		comms, err := gatewayapi.NewGatewayAPIComms(gateway, &g.settings)
+		comms, err := gatewayapi.NewGatewayAPIComms(&gateway, &g.settings)
 		if err != nil {
 			panic(err)
 		} 

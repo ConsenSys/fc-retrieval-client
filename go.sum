@@ -15,10 +15,10 @@ github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210122073456-89eb6459e1f9/go.mod h1:jStgGs5uwGIenRmFMK9sGiM+VyBAeRm9e4RC3zK830A=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210205000156-feb376decad5 h1:SO1adOd7m9gB82TTOhgMqTSJkXtYgugX/Wcuti6H5E4=
-github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210205000156-feb376decad5/go.mod h1:G3+w196kszc4RGNMUjITWE/OPW0BBT6/WMwHWkBiuK4=
-github.com/ConsenSys/fc-retrieval-register v0.0.0-20210201121311-0b8f3dc49cf5 h1:SKSXB9MC/3QAQp/HzdkIRFCIEvPGhJ9UeYNajydMP0U=
-github.com/ConsenSys/fc-retrieval-register v0.0.0-20210201121311-0b8f3dc49cf5/go.mod h1:Xs9qRhBLb+QPEWwMwYHBDcD1Ndun5kDYWfXNKzuIon4=
+github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210205091813-c02eddea72ee h1:678+KRTBaFOu1e5xWYB84DhC48NbKhc9Klr8ipAmiqA=
+github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210205091813-c02eddea72ee/go.mod h1:nbNZeRyMUAvL6y5mTe2LNEsXcmUj/HwtKXCpiium16I=
+github.com/ConsenSys/fc-retrieval-register v0.0.0-20210204110814-ed78769e295a h1:dAmXjhLnJK7ASekDU9L7+Be4ozD04GluWkHBMthxv6c=
+github.com/ConsenSys/fc-retrieval-register v0.0.0-20210204110814-ed78769e295a/go.mod h1:Xs9qRhBLb+QPEWwMwYHBDcD1Ndun5kDYWfXNKzuIon4=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/PuerkitoBio/purell v1.1.0/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
 github.com/PuerkitoBio/purell v1.1.1/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
