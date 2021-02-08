@@ -3,7 +3,7 @@ module github.com/ConsenSys/fc-retrieval-client
 go 1.15
 
 require (
-	github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210205091813-c02eddea72ee
+	github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210208044401-e74d9203fd9a
 	github.com/ConsenSys/fc-retrieval-register v0.0.0-20210204110814-ed78769e295a
 	github.com/bitly/go-simplejson v0.5.0
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
