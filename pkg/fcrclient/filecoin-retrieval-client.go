@@ -36,7 +36,7 @@ func NewFilecoinRetrievalClient(conf Settings) (*FilecoinRetrievalClient, error)
 	logging.Info("Filecoin Retrieval Client started")
 	var c = FilecoinRetrievalClient{}
 	clientSettings := conf.(*settings.ClientSettings)
-	c.gatewayManager = control.GetGatewayManager(*clientSettings)
+	c.gatewayManager = control.NewGatewayManager(*clientSettings)
 	return &c, nil
 
 }

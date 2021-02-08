@@ -46,39 +46,16 @@ type ActiveGateway struct {
 
 }
 
-// // GatewayManagerSettings is used to communicate the settings to be used by the 
-// // Gateway Manager.
-// type GatewayManagerSettings struct {
-// 	MaxEstablishmentTTL int64
-// 	NodeID *nodeid.NodeID
-// }
-
-var doOnce sync.Once
-var singleInstance *GatewayManager
-
-// GetGatewayManager returns the single instance of the gateway manager.
-// The settings parameter must be used with the first call to this function.
-// After that, the settings parameter is ignored.
-func GetGatewayManager(settings ...settings.ClientSettings) *GatewayManager {
-    doOnce.Do(func() {
-		if len(settings) != 1 {
-			// TODO replace with ErrorAndPanic once available
-			logging.ErrorAndPanic("Unexpected number of parameter passed to first call of GetGatewayManager")
-		}
-		startGatewayManager(settings[0])
-	})
-	return singleInstance
-}
-
-func startGatewayManager(settings settings.ClientSettings) {
+// NewGatewayManager returns an initialised instance of the gateway manager.
+func NewGatewayManager(settings settings.ClientSettings) *GatewayManager {
 	g := GatewayManager{}
 	g.settings = settings
-
-	singleInstance = &g
-
 	g.gatewayManagerRunner()
+	return &g
 }
 
+
+// TODO this should be in a go routine and loop for ever ,
 func (g *GatewayManager) gatewayManagerRunner() {
 	logging.Info("Gateway Manager: Management thread started")
 
