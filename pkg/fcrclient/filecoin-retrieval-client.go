@@ -56,6 +56,12 @@ func (c *FilecoinRetrievalClient) FindBestOffers(pieceCID [32]byte, maxPrice int
 	return nil
 }
 
+// ConnectedGateways returns a slide of the URLs for the gateways this client is connected to.
+func (c *FilecoinRetrievalClient) ConnectedGateways() []string {
+	return c.gatewayManager.GetConnectedGateways()
+}
+
+
 // Shutdown releases all resources used by the library
 func (c *FilecoinRetrievalClient) Shutdown() {
 	logging.Info("Filecoin Retrieval Client shutting down")

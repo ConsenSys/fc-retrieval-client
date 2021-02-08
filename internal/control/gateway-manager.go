@@ -141,6 +141,16 @@ func (g *GatewayManager) FindOffersStandardDiscovery(contentID *cid.ContentID) (
 
 }
 
+// GetConnectedGateways returns the list of domain names of gateways that the client 
+// is currently connected to.
+func (g *GatewayManager) GetConnectedGateways() []string {
+	urls := make([]string, len(g.gateways))
+	for i, gateway := range g.gateways {
+		urls[i] = gateway.comms.ApiURL
+	}
+	return urls
+}
+
 
 // Shutdown stops go routines and closes sockets. This should be called as part 
 // of the graceful library shutdown

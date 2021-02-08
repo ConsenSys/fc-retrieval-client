@@ -34,7 +34,7 @@ var clientAPIProtocolSupported []int
 
 // Comms holds the communications specific data
 type Comms struct {
-	apiURL string
+	ApiURL string
 	gatewayPubKey *fcrcrypto.KeyPair
 	gatewayPubKeyVer *fcrcrypto.KeyVersion
 	settings *settings.ClientSettings
@@ -58,7 +58,7 @@ func NewGatewayAPIComms(gatewayInfo *register.GatewayRegister, settings *setting
 	}
 
 	netComms := Comms{}
-	netComms.apiURL = apiURLStart + hostAndPort + apiURLEnd
+	netComms.ApiURL = apiURLStart + hostAndPort + apiURLEnd
 	netComms.gatewayPubKey, err = fcrcrypto.DecodePublicKey(gatewayInfo.SigingKey)
 	if err != nil {
 		return nil, err
@@ -76,14 +76,14 @@ func (c *Comms) gatewayCall(msg interface{}) (*simplejson.Json) {
 	mJSON, _ := json.Marshal(msg)
 	logging.Info("JSON sent: %s", string(mJSON))
 	contentReader := bytes.NewReader(mJSON)
-	req, _ := http.NewRequest("POST", c.apiURL, contentReader)
+	req, _ := http.NewRequest("POST", c.ApiURL, contentReader)
 	req.Header.Set("Content-Type", "application/json")
 
 	// Send request and receive response.
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		logging.ErrorAndPanic("Client - Gateway communications (%s): %s", c.apiURL, err)
+		logging.ErrorAndPanic("Client - Gateway communications (%s): %s", c.ApiURL, err)
 	}
 
 	data, _ := ioutil.ReadAll(resp.Body)
