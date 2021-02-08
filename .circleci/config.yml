@@ -112,7 +112,6 @@ jobs:
               git clone https://github.com/ConsenSys/fc-retrieval-gateway
               git clone https://github.com/ConsenSys/fc-retrieval-provider
           working_directory: /go/src/github.com/ConsenSys/
-
       # Ensure go.mod is configured correctly
       - run: make detectmisconfig
       # Run unit tests
@@ -123,7 +122,6 @@ workflows:
   test_and_release:
     jobs:
       - utest
-      - release
 
 #      - triggerItest:
 #          requires:
