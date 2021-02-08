@@ -55,13 +55,13 @@ func NewGatewayManager(settings settings.ClientSettings) *GatewayManager {
 }
 
 
-// TODO this should be in a go routine and loop for ever ,
+// TODO this should be in a go routine and loop for ever.
 func (g *GatewayManager) gatewayManagerRunner() {
 	logging.Info("Gateway Manager: Management thread started")
 
 
 	// Call this once each hour or maybe day.
-	gateways, err := register.GetRegisteredGateways("http://register:8090")
+	gateways, err := register.GetRegisteredGateways("http://localhost:8090")
 	if err != nil {
 		logging.Error("Unable to get registered gateways: %v", err)
 	}
