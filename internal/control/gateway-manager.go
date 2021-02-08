@@ -16,8 +16,11 @@ package control
  */
 
 import (
+	"fmt"
 	"sync"
 
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cid"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cidoffer"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
 	"github.com/ConsenSys/fc-retrieval-register/pkg/register"
@@ -121,6 +124,23 @@ func (g *GatewayManager) UnblockGateway(hostName string) {
 	// TODO
 
 }
+
+
+// FindOffersStandardDiscovery finds offers using the standard discovery mechanism.
+func (g *GatewayManager) FindOffersStandardDiscovery(contentID *cid.ContentID) ([]cidoffer.CidGroupOffer, error) {
+	if len(g.gateways) == 0 {
+		return nil, fmt.Errorf("No gateways available")
+	}
+	return nil, nil
+
+	// TODO need to do nonce management
+//	for gateway := range g.gateways {
+// TODO		gateway.comms.GatewayStdCIDDiscovery(contentID, 1) 
+
+//	}
+
+}
+
 
 // Shutdown stops go routines and closes sockets. This should be called as part 
 // of the graceful library shutdown

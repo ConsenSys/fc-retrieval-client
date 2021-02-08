@@ -15,17 +15,16 @@ package fcrclient
  * SPDX-License-Identifier: Apache-2.0
  */
 
- import (
+import (
 	"encoding/hex"
-	
+
 	"github.com/ConsenSys/fc-retrieval-client/internal/control"
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cidoffer"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-
 )
 
-
-// FilecoinRetrievalClient holds information about the interaction of 
+// FilecoinRetrievalClient holds information about the interaction of
 // the Filecoin Retrieval Client with Filecoin Retrieval Gateways.
 type FilecoinRetrievalClient struct {
 	gatewayManager *control.GatewayManager
@@ -44,13 +43,14 @@ func NewFilecoinRetrievalClient(conf Settings) (*FilecoinRetrievalClient, error)
 
 
 // FindBestOffers locates offsers for supplying the content associated with the pieceCID
-func (c *FilecoinRetrievalClient) FindBestOffers(pieceCID [32]byte, maxPrice int64, maxExpectedLatency int64) ([]PieceCIDOffer){
+func (c *FilecoinRetrievalClient) FindBestOffers(pieceCID [32]byte, maxPrice int64, maxExpectedLatency int64) ([]cidoffer.CidGroupOffer){
 	var hexDumpPieceCID string
 	if logging.InfoEnabled() {
 		hexDumpPieceCID = hex.Dump(pieceCID[:])
 		logging.Info("Filecoin Retrieval Client: FindBestOffers(pieceCID: %s, maxPrice: %d, maxExpectedLatency: %d", 
 			hexDumpPieceCID, maxPrice, maxExpectedLatency)
 	}
+
 	// TODO
 	logging.Info("Filecoin Retrieval Client: FindBestOffers(pieceCID: %s) returning no offers", hexDumpPieceCID)
 	return nil
