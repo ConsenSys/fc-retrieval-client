@@ -32,8 +32,8 @@ type FilecoinRetrievalClient struct {
 	// TODO have a list of gateway objects of all the current gateways being interacted with
 }
 
-// InitFilecoinRetrievalClient initialise the Filecoin Retreival Client library
-func InitFilecoinRetrievalClient(conf Settings) (*FilecoinRetrievalClient, error) {
+// NewFilecoinRetrievalClient initialise the Filecoin Retreival Client library
+func NewFilecoinRetrievalClient(conf Settings) (*FilecoinRetrievalClient, error) {
 	logging.Info("Filecoin Retrieval Client started")
 	var c = FilecoinRetrievalClient{}
 	clientSettings := conf.(*settings.ClientSettings)
