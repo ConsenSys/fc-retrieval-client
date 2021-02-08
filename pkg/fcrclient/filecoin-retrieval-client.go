@@ -36,7 +36,7 @@ var singleInstance *FilecoinRetrievalClient
 var initialised = false
 
 // InitFilecoinRetrievalClient initialise the Filecoin Retreival Client library
-func InitFilecoinRetrievalClient(settings Settings) *FilecoinRetrievalClient {
+func InitFilecoinRetrievalClient(settings Settings) (*FilecoinRetrievalClient, error) {
 	if initialised {
 		panic("Attempt to init Filecoin Retrieval Client a second time")
 	}
@@ -44,7 +44,7 @@ func InitFilecoinRetrievalClient(settings Settings) *FilecoinRetrievalClient {
 	c.startUp(settings)
 	singleInstance = &c
 	initialised = true
-	return singleInstance
+	return singleInstance, nil
 
 }
 
