@@ -32,41 +32,15 @@ type FilecoinRetrievalClient struct {
 	// TODO have a list of gateway objects of all the current gateways being interacted with
 }
 
-var singleInstance *FilecoinRetrievalClient
-var initialised = false
-
 // InitFilecoinRetrievalClient initialise the Filecoin Retreival Client library
-func InitFilecoinRetrievalClient(settings Settings) (*FilecoinRetrievalClient, error) {
-	if initialised {
-		panic("Attempt to init Filecoin Retrieval Client a second time")
-	}
-	var c = FilecoinRetrievalClient{}
-	c.startUp(settings)
-	singleInstance = &c
-	initialised = true
-	return singleInstance, nil
-
-}
-
-
-
-
-// GetFilecoinRetrievalClient creates a Filecoin Retrieval Client
-func GetFilecoinRetrievalClient() *FilecoinRetrievalClient {
-	if !initialised {
-		panic("Filecoin Retrieval Client not initialised")
-	}
-
-	return singleInstance
-}
-
-func (c *FilecoinRetrievalClient) startUp(conf Settings) {
+func InitFilecoinRetrievalClient(conf Settings) (*FilecoinRetrievalClient, error) {
 	logging.Info("Filecoin Retrieval Client started")
+	var c = FilecoinRetrievalClient{}
 	clientSettings := conf.(*settings.ClientSettings)
 	c.gatewayManager = control.GetGatewayManager(*clientSettings)
+	return &c, nil
+
 }
-
-
 
 
 // FindBestOffers locates offsers for supplying the content associated with the pieceCID
