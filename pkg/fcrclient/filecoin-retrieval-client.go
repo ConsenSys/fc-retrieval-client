@@ -16,8 +16,6 @@ package fcrclient
  */
 
 import (
-	"encoding/hex"
-
 	"github.com/ConsenSys/fc-retrieval-client/internal/control"
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cid"
