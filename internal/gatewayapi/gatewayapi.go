@@ -42,7 +42,7 @@ type Comms struct {
 
 // NewGatewayAPIComms creates a connection with a gateway
 func NewGatewayAPIComms(gatewayInfo *register.GatewayRegister, settings *settings.ClientSettings) (*Comms, error){
-	hostAndPort := gatewayInfo.Address
+	hostAndPort := gatewayInfo.NetworkGatewayInfo
 
 	// Create the constant array.
 	if (clientAPIProtocolSupported == nil) {
@@ -52,15 +52,16 @@ func NewGatewayAPIComms(gatewayInfo *register.GatewayRegister, settings *setting
 
 	// Check that the host name is valid
 	err := validateHostName(hostAndPort)
-	if (err != nil) {
-		logging.Error("Host name invalid: %s", err. Error())
-		return nil, err
-	}
+	// if (err != nil) {
+	// 	logging.Error("Host name invalid: %s", err. Error())
+	// 	return nil, err
+	// }
 
 	netComms := Comms{}
 	netComms.ApiURL = apiURLStart + hostAndPort + apiURLEnd
 	netComms.gatewayPubKey, err = fcrcrypto.DecodePublicKey(gatewayInfo.SigingKey)
 	if err != nil {
+		logging.Error("Unable to decode public key: %v", err)
 		return nil, err
 	}
 	netComms.gatewayPubKeyVer = fcrcrypto.DecodeKeyVersion(1) // TODO gatewayInfo.GatewayRetrievalPublicKeyVersion

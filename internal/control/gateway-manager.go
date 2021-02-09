@@ -61,7 +61,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 
 
 	// Call this once each hour or maybe day.
-	gateways, err := register.GetRegisteredGateways("http://register:8090")
+	gateways, err := register.GetRegisteredGateways("http://localhost:9020")
 	if err != nil {
 		logging.Error("Unable to get registered gateways: %v", err)
 	}
