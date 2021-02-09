@@ -108,15 +108,21 @@ func (g *GatewayManager) FindOffersStandardDiscovery(contentID *cid.ContentID) (
 	if len(g.gateways) == 0 {
 		return nil, fmt.Errorf("No gateways available")
 	}
-	return nil, nil
 
-	// TODO need to do nonce management
-//	for gateway := range g.gateways {
-// TODO		gateway.comms.GatewayStdCIDDiscovery(contentID, 1) 
-
-//	}
-
+	var aggregateOffers []cidoffer.CidGroupOffer
+	for _, gw := range g.gateways {
+		// TODO need to do nonce management
+		// TODO need to do requests to all gateways in parallel, rather than serially
+		offers, err := gw.comms.GatewayStdCIDDiscovery(contentID, 1) 
+		if err != nil {
+			logging.Warn("GatewayStdDiscovery error. Gateway: %s, Error: %s", gw.info.NodeID, err)
+		}
+		// TODO: probably should remove duplicate offers at this point
+		aggregateOffers = append(aggregateOffers, offers...)
+	}
+	return aggregateOffers, nil
 }
+
 
 // GetConnectedGateways returns the list of domain names of gateways that the client 
 // is currently connected to.

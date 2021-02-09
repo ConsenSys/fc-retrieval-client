@@ -20,6 +20,7 @@ import (
 
 	"github.com/ConsenSys/fc-retrieval-client/internal/control"
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cid"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cidoffer"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
 )
@@ -43,17 +44,26 @@ func NewFilecoinRetrievalClient(conf Settings) (*FilecoinRetrievalClient, error)
 
 
 // FindBestOffers locates offsers for supplying the content associated with the pieceCID
-func (c *FilecoinRetrievalClient) FindBestOffers(pieceCID [32]byte, maxPrice int64, maxExpectedLatency int64) ([]cidoffer.CidGroupOffer){
-	var hexDumpPieceCID string
-	if logging.InfoEnabled() {
-		hexDumpPieceCID = hex.Dump(pieceCID[:])
-		logging.Info("Filecoin Retrieval Client: FindBestOffers(pieceCID: %s, maxPrice: %d, maxExpectedLatency: %d", 
-			hexDumpPieceCID, maxPrice, maxExpectedLatency)
+func (c *FilecoinRetrievalClient) FindBestOffers(pieceCID [32]byte, maxPrice uint64, maxExpectedLatency int64) ([]cidoffer.CidGroupOffer, error){
+	cid := cid.NewContentIDFromBytes(pieceCID[:])
+	logging.Trace("FindBestOffers(pieceCID: %s, maxPrice: %d, maxExpectedLatency: %d", 
+		cid.ToString(), maxPrice, maxExpectedLatency)
+
+	rawOffers, err := c.gatewayManager.FindOffersStandardDiscovery(cid)
+	if err != nil {
+		return nil, err
+	}
+	logging.Trace("FindBestOffers(pieceCID: %s) offers found before filtering: %d", cid.ToString(), len(rawOffers))
+	var offers []cidoffer.CidGroupOffer
+	for _, offer := range rawOffers {
+		if offer.Price < maxPrice {
+			offers = append(offers, offer)
+		}
+		// TODO: need to have latency filter.
 	}
 
-	// TODO
-	logging.Info("Filecoin Retrieval Client: FindBestOffers(pieceCID: %s) returning no offers", hexDumpPieceCID)
-	return nil
+	logging.Info("FindBestOffers(pieceCID: %s) found %d offers", cid.ToString(), len(offers))
+	return offers, nil
 }
 
 // ConnectedGateways returns a slide of the URLs for the gateways this client is connected to.
