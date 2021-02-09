@@ -46,7 +46,7 @@ check_repo() {
         go get github.com/ConsenSys/fc-retrieval-$1@main
     else
         echo client and $1 branch match
-        GITHASH=`git rev-parse $ITEST_BRANCH`
+        GITHASH=`git rev-parse $CLIENT_BRANCH`
         echo "Calling go get to use $OTHER_REPO_BRANCH on fc-retrieval-$1 ($GITHASH)"
         cd $CLIENT_DIR
         go get -u -t -v github.com/ConsenSys/fc-retrieval-$1@$GITHASH
