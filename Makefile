@@ -9,7 +9,7 @@ REGISTRY?=
 
 # This target (the first target in the build file) is the one that is executed if no 
 # command line args are specified.
-release1: clean useremoteconfig utest 
+release1: clean useremote utest 
 
 # Use this target if you are using local packages, or if the build is via circle ci, 
 # and the go.mod and go.sum file should not be updated
