@@ -10,29 +10,29 @@ import (
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 )
 
-
 // BuilderImpl holds the library configuration
 type BuilderImpl struct {
-	logLevel     string
-	logTarget    string
+	logLevel         string
+	logTarget        string
 	establishmentTTL int64
-	clientID              *nodeid.NodeID
+	clientID         *nodeid.NodeID
+	registerURL      string
 
-	blockchainPrivateKey	*fcrcrypto.KeyPair
+	blockchainPrivateKey *fcrcrypto.KeyPair
 
-	retrievalPrivateKey		*fcrcrypto.KeyPair
-	retrievalPrivateKeyVer	*fcrcrypto.KeyVersion
+	retrievalPrivateKey    *fcrcrypto.KeyPair
+	retrievalPrivateKeyVer *fcrcrypto.KeyVersion
 }
 
 // CreateSettings creates an object with the default settings.
-func CreateSettings() (*BuilderImpl) {
+func CreateSettings() *BuilderImpl {
 	f := BuilderImpl{}
 	f.logLevel = defaultLogLevel
 	f.logTarget = defaultLogTarget
 	f.establishmentTTL = defaultEstablishmentTTL
+	f.registerURL = defaultRegisterURL
 	return &f
 }
-
 
 // SetLogging sets the log level and target.
 func (f *BuilderImpl) SetLogging(logLevel string, logTarget string) {
@@ -43,6 +43,11 @@ func (f *BuilderImpl) SetLogging(logLevel string, logTarget string) {
 // SetEstablishmentTTL sets the time to live for the establishment message between client and gateway.
 func (f *BuilderImpl) SetEstablishmentTTL(ttl int64) {
 	f.establishmentTTL = ttl
+}
+
+// SetRegisterURL sets the register URL.
+func (f *BuilderImpl) SetRegisterURL(url string) {
+	f.registerURL = url
 }
 
 // SetBlockchainPrivateKey sets the blockchain private key.
@@ -56,9 +61,8 @@ func (f *BuilderImpl) SetRetrievalPrivateKey(rPkey *fcrcrypto.KeyPair, ver *fcrc
 	f.retrievalPrivateKeyVer = ver
 }
 
-
 // Build creates a settings object and initialises the logging system.
-func (f *BuilderImpl) Build() (*ClientSettings){
+func (f *BuilderImpl) Build() *ClientSettings {
 	var err error
 
 	logging.Init1(f.logLevel, f.logTarget)
@@ -67,6 +71,7 @@ func (f *BuilderImpl) Build() (*ClientSettings){
 
 	g := ClientSettings{}
 	g.establishmentTTL = f.establishmentTTL
+	g.registerURL = f.registerURL
 
 	if f.blockchainPrivateKey == nil {
 		logging.ErrorAndPanic("Settings: Blockchain Private Key not set")
@@ -76,17 +81,17 @@ func (f *BuilderImpl) Build() (*ClientSettings){
 	if f.clientID == nil {
 		logging.Info("Settings: No Client ID set. Generating random client ID")
 		// TODO replace once NewRandomNodeID becomes available.
-		g.clientID , err = nodeid.NewRandomNodeID()
+		g.clientID, err = nodeid.NewRandomNodeID()
 		if err != nil {
 			logging.ErrorAndPanic("Settings: Error while generating random client ID: %s", err)
 		}
 	} else {
-		g.clientID = f.clientID 
+		g.clientID = f.clientID
 	}
 
-	if (f.retrievalPrivateKey == nil) {
+	if f.retrievalPrivateKey == nil {
 		pKey, err := fcrcrypto.GenerateRetrievalV1KeyPair()
-		if (err != nil) {
+		if err != nil {
 			logging.ErrorAndPanic("Settings: Error while generating random retrieval key pair: %s", err)
 		}
 		g.retrievalPrivateKey = pKey
@@ -98,7 +103,3 @@ func (f *BuilderImpl) Build() (*ClientSettings){
 
 	return &g
 }
-
-
-
-

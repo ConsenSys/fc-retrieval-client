@@ -12,6 +12,8 @@ const (
 	defaultLogLevel = "trace"
 
 	// DefaultLogTarget is the default output location of log output.
-    defaultLogTarget = "STDOUT"
-)
+	defaultLogTarget = "STDOUT"
 
+	// DefaultLogTarget is the default output location of log output.
+	defaultRegisterURL = "http://localhost:9020"
+)

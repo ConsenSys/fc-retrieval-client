@@ -9,24 +9,26 @@ import (
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 )
 
-
-
-
 // ClientSettings holds the library configuration
 type ClientSettings struct {
 	establishmentTTL int64
-	clientID              *nodeid.NodeID
+	registerURL      string
+	clientID         *nodeid.NodeID
 
-	blockchainPrivateKey	*fcrcrypto.KeyPair
+	blockchainPrivateKey *fcrcrypto.KeyPair
 
-	retrievalPrivateKey		*fcrcrypto.KeyPair
-	retrievalPrivateKeyVer	*fcrcrypto.KeyVersion
+	retrievalPrivateKey    *fcrcrypto.KeyPair
+	retrievalPrivateKeyVer *fcrcrypto.KeyVersion
 }
-
 
 // EstablishmentTTL returns the establishmentTTL
 func (c ClientSettings) EstablishmentTTL() int64 {
 	return c.establishmentTTL
+}
+
+// RegisterURL returns the register URL
+func (c ClientSettings) RegisterURL() string {
+	return c.registerURL
 }
 
 // ClientID returns the ClientID
@@ -48,5 +50,3 @@ func (c ClientSettings) RetrievalPrivateKey() *fcrcrypto.KeyPair {
 func (c ClientSettings) RetrievalPrivateKeyVer() *fcrcrypto.KeyVersion {
 	return c.retrievalPrivateKeyVer
 }
-
-

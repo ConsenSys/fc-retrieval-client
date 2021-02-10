@@ -31,9 +31,9 @@ import (
 
 // GatewayManager managers the pool of gateways and the connections to them.
 type GatewayManager struct {
-	settings settings.ClientSettings
-	gateways []ActiveGateway
-	gatewaysLock   sync.RWMutex
+	settings     settings.ClientSettings
+	gateways     []ActiveGateway
+	gatewaysLock sync.RWMutex
 
 	// Registered Gateways
 	RegisteredGateways []register.GatewayRegister
@@ -41,9 +41,8 @@ type GatewayManager struct {
 
 // ActiveGateway contains information for a single gateway
 type ActiveGateway struct {
-	info register.GatewayRegister
-	comms 		*gatewayapi.Comms
-
+	info  register.GatewayRegister
+	comms *gatewayapi.Comms
 }
 
 // NewGatewayManager returns an initialised instance of the gateway manager.
@@ -54,14 +53,12 @@ func NewGatewayManager(settings settings.ClientSettings) *GatewayManager {
 	return &g
 }
 
-
 // TODO this should be in a go routine and loop for ever.
 func (g *GatewayManager) gatewayManagerRunner() {
 	logging.Info("Gateway Manager: Management thread started")
 
-
 	// Call this once each hour or maybe day.
-	gateways, err := register.GetRegisteredGateways("http://register:9020")
+	gateways, err := register.GetRegisteredGateways(g.settings.RegisterURL())
 	if err != nil {
 		logging.Error("Unable to get registered gateways: %v", err)
 	}
@@ -74,7 +71,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 		comms, err := gatewayapi.NewGatewayAPIComms(&gateway, &g.settings)
 		if err != nil {
 			panic(err)
-		} 
+		}
 
 		// Try to do the establishment with the new gateway
 		var challenge [32]byte
@@ -85,8 +82,6 @@ func (g *GatewayManager) gatewayManagerRunner() {
 		g.gateways = append(g.gateways, activeGateway)
 	}
 
-
-
 	logging.Info("Gateway Manager using %d gateways", len(g.gateways))
 }
 
@@ -95,13 +90,11 @@ func (g *GatewayManager) BlockGateway(hostName string) {
 	// TODO
 }
 
-
 // UnblockGateway add a host to allowed list of gateways
 func (g *GatewayManager) UnblockGateway(hostName string) {
 	// TODO
 
 }
-
 
 // FindOffersStandardDiscovery finds offers using the standard discovery mechanism.
 func (g *GatewayManager) FindOffersStandardDiscovery(contentID *cid.ContentID) ([]cidoffer.CidGroupOffer, error) {
@@ -113,7 +106,7 @@ func (g *GatewayManager) FindOffersStandardDiscovery(contentID *cid.ContentID) (
 	for _, gw := range g.gateways {
 		// TODO need to do nonce management
 		// TODO need to do requests to all gateways in parallel, rather than serially
-		offers, err := gw.comms.GatewayStdCIDDiscovery(contentID, 1) 
+		offers, err := gw.comms.GatewayStdCIDDiscovery(contentID, 1)
 		if err != nil {
 			logging.Warn("GatewayStdDiscovery error. Gateway: %s, Error: %s", gw.info.NodeID, err)
 		}
@@ -123,8 +116,7 @@ func (g *GatewayManager) FindOffersStandardDiscovery(contentID *cid.ContentID) (
 	return aggregateOffers, nil
 }
 
-
-// GetConnectedGateways returns the list of domain names of gateways that the client 
+// GetConnectedGateways returns the list of domain names of gateways that the client
 // is currently connected to.
 func (g *GatewayManager) GetConnectedGateways() []string {
 	urls := make([]string, len(g.gateways))
@@ -134,8 +126,7 @@ func (g *GatewayManager) GetConnectedGateways() []string {
 	return urls
 }
 
-
-// Shutdown stops go routines and closes sockets. This should be called as part 
+// Shutdown stops go routines and closes sockets. This should be called as part
 // of the graceful library shutdown
 func (g *GatewayManager) Shutdown() {
 	// TODO
