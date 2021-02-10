@@ -66,7 +66,7 @@ func NewGatewayAPIComms(gatewayInfo *register.GatewayRegister, settings *setting
 		signingKeyStr = string(runes[2:])
 	}
 
-	netComms.gatewayPubKey, err = fcrcrypto.DecodePublicKey(gatewayInfo.SigingKey)
+	netComms.gatewayPubKey, err = fcrcrypto.DecodePublicKey(signingKeyStr)
 	if err != nil {
 		logging.Error("Unable to decode public key: %v", err)
 		return nil, err
