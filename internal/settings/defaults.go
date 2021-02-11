@@ -16,5 +16,5 @@ const (
 
 	// DefaultRegisterURL is the default location of the Register service. 
 	// register:9020 is the value that will work for the integration test system.
-	defaultRegisterURL = "http://localhost:9020"
+	defaultRegisterURL = "http://register:9020"
 )
