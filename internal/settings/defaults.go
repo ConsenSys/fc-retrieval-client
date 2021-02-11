@@ -14,6 +14,7 @@ const (
 	// DefaultLogTarget is the default output location of log output.
 	defaultLogTarget = "STDOUT"
 
-	// DefaultLogTarget is the default output location of log output.
-	defaultRegisterURL = "http://localhost:9020"
+	// DefaultRegisterURL is the default location of the Register service. 
+	// register:9020 is the value that will work for the integration test system.
+	defaultRegisterURL = "http://register:9020"
 )
