@@ -60,7 +60,7 @@ func NewGatewayAPIComms(gatewayInfo *register.GatewayRegister, settings *setting
 	netComms := Comms{}
 	netComms.ApiURL = apiURLStart + hostAndPort + apiURLEnd
 
-	signingKeyStr := settings.RetrievalPrivateKey()
+	signingKeyStr := gatewayInfo.SigingKey
 	logging.Info("Signing Key1: %s", signingKeyStr)
 	if len(signingKeyStr) > 2 && signingKeyStr[:2] == "0x" {
 		runes := []rune(signingKeyStr)
