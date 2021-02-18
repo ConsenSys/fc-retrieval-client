@@ -61,10 +61,12 @@ func NewGatewayAPIComms(gatewayInfo *register.GatewayRegister, settings *setting
 	netComms.ApiURL = apiURLStart + hostAndPort + apiURLEnd
 
 	signingKeyStr := gatewayInfo.SigingKey
+	logging.Info("Signing Key1: %s", signingKeyStr)
 	if len(signingKeyStr) > 2 && signingKeyStr[:2] == "0x" {
 		runes := []rune(signingKeyStr)
 		signingKeyStr = string(runes[2:])
 	}
+	logging.Info("Signing Key2: %s", signingKeyStr)
 
 	netComms.gatewayPubKey, err = fcrcrypto.DecodePublicKey(signingKeyStr)
 	if err != nil {
