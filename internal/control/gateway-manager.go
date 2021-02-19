@@ -34,9 +34,6 @@ type GatewayManager struct {
 	settings     settings.ClientSettings
 	gateways     []ActiveGateway
 	gatewaysLock sync.RWMutex
-
-	// Registered Gateways
-	RegisteredGateways []register.GatewayRegister
 }
 
 // ActiveGateway contains information for a single gateway
@@ -58,17 +55,23 @@ func (g *GatewayManager) gatewayManagerRunner() {
 	logging.Info("Gateway Manager: Management thread started")
 
 	// Call this once each hour or maybe day.
-	gateways, err := register.GetRegisteredGateways(g.settings.RegisterURL())
+	gws, err := register.GetRegisteredGateways(g.settings.RegisterURL())
 	if err != nil {
 		logging.Error("Unable to get registered gateways: %v", err)
 	}
-	g.RegisteredGateways = gateways
+	logging.Info("Register returned %d gateways", len(gws))
 
 	// TODO this loop is where the managing of gateways that the client is using happens.
-	logging.Info("Gateway Manager: GetGateways returned %d gateways", len(gateways))
-	for _, gateway := range gateways {
-		logging.Info("Setting-up comms with: %+v", gateway)
-		comms, err := gatewayapi.NewGatewayAPIComms(&gateway, &g.settings)
+	logging.Info("Gateway Manager: GetGateways returned %d gateways", len(gws))
+	for _, gw := range gws {
+		gatewayID := gw.NodeID
+		if g.gatewayInfoInvalid(&gw) {
+			logging.Warn("Gateway registration information for gateway (%s) is invalid. Ignoring.", gatewayID)
+			continue
+		}
+
+		logging.Info("Setting-up comms with: %+v", gw)
+		comms, err := gatewayapi.NewGatewayAPIComms(&gw, &g.settings)
 		if err != nil {
 			panic(err)
 		}
@@ -78,7 +81,7 @@ func (g *GatewayManager) gatewayManagerRunner() {
 		fcrcrypto.GeneratePublicRandomBytes(challenge[:])
 		comms.GatewayClientEstablishment(challenge)
 
-		activeGateway := ActiveGateway{gateway, comms}
+		activeGateway := ActiveGateway{gw, comms}
 		g.gateways = append(g.gateways, activeGateway)
 	}
 
@@ -130,4 +133,47 @@ func (g *GatewayManager) GetConnectedGateways() []string {
 // of the graceful library shutdown
 func (g *GatewayManager) Shutdown() {
 	// TODO
+}
+
+
+// Validate the information coming from the Gateway.
+func (g *GatewayManager) gatewayInfoInvalid(gateway *register.GatewayRegister) bool {
+	// All of the fields must have a value in them.
+	if gateway.NodeID == "" {
+		logging.Warn("Gateway registration issue: NodeID not set")
+		return true;
+	}
+	if gateway.Address == "" {
+		logging.Warn("Gateway registration issue: Gateway IP address or domain name not set")
+		return true;
+	}
+	if gateway.NetworkGatewayInfo == "" {
+		logging.Warn("Gateway registration issue: Port for Gateway to Gateway communications not set")
+		return true;
+	}
+	if gateway.NetworkProviderInfo == "" {
+		logging.Warn("Gateway registration issue: Port for Provider to Gateway communications not set")
+		return true;
+	}
+	if gateway.NetworkClientInfo == "" {
+		logging.Warn("Gateway registration issue: Port for Client to Gateway communications not set")
+		return true;
+	}
+	if gateway.NetworkAdminInfo == "" {
+		logging.Warn("Gateway registration issue: Port for Admin to Gateway communications not set")
+		return true;
+	}
+	if gateway.RegionCode == "" {
+		logging.Warn("Gateway registration issue: Region Code not set")
+		return true;
+	}
+	if gateway.RootSigningKey == "" {
+		logging.Warn("Gateway registration issue: Root Signing Public Key not set")
+		return true;
+	}
+	if gateway.SigingKey == ""	{
+		logging.Warn("Gateway registration issue: Retrieval Signing Key not set")
+		return true;
+	}
+	return false;
 }

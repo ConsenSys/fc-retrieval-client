@@ -40,7 +40,7 @@ type Comms struct {
 	settings *settings.ClientSettings
 }
 
-// NewGatewayAPIComms creates a connection with a gateway
+// NewGatewayAPIComms gathers information to allow a connection with a gateway to be created
 func NewGatewayAPIComms(gatewayInfo *register.GatewayRegister, settings *settings.ClientSettings) (*Comms, error){
 	hostAndPort := gatewayInfo.NetworkGatewayInfo
 
