@@ -21,6 +21,7 @@ import (
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cid"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cidoffer"
 	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
 )
 
 // FilecoinRetrievalClient holds information about the interaction of
@@ -39,6 +40,39 @@ func NewFilecoinRetrievalClient(conf Settings) (*FilecoinRetrievalClient, error)
 	return &c, nil
 
 }
+
+
+// FindGateways find gateways located near too the specified location. Use AddGateways
+// to use these gateways.
+func (c *FilecoinRetrievalClient) FindGateways(location []string, maxNumToLocate int) ([]*nodeid.NodeID, error) {
+	logging.Info("Find gateways")
+	return c.gatewayManager.FindGateways(location, maxNumToLocate)
+}
+
+// AddGateways adds one or more gateways to use.
+func (c *FilecoinRetrievalClient) AddGateways(gwNodeIDs []*nodeid.NodeID) int {
+	logging.Info("Add gateways")
+	return c.gatewayManager.AddGateways(gwNodeIDs)
+}
+
+// RemoveGateways removes one or more gateways from the list of Gateways to use.
+func (c *FilecoinRetrievalClient) RemoveGateways(gwNodeIDs []*nodeid.NodeID) int {
+	logging.Info("Remove gateways")
+	return c.gatewayManager.RemoveGateways(gwNodeIDs)
+}
+
+// RemoveAllGateways removes all gateways from the list of Gateways to use.
+func (c *FilecoinRetrievalClient) RemoveAllGateways() int {
+	logging.Info("Remove all gateways")
+	return c.gatewayManager.RemoveAllGateways()
+}
+
+// GetGateways returns the list of gateways that are being used.
+func (c *FilecoinRetrievalClient) GetGateways() []*nodeid.NodeID {
+	logging.Info("Get gateways")
+	return c.gatewayManager.GetGateways()
+}
+
 
 
 // FindBestOffers locates offsers for supplying the content associated with the pieceCID
