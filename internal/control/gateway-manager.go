@@ -63,7 +63,8 @@ func NewGatewayManager(settings settings.ClientSettings) *GatewayManager {
 
 // Get the latest gateway information now.
 func (g *GatewayManager) requestUpdate() {
-
+	// TODO should not call this if it is already running.
+	g.getLatestGatewayInfo()
 }
 
 

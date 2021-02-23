@@ -98,7 +98,7 @@ func (c *FilecoinRetrievalClient) FindBestOffers(pieceCID [32]byte, maxPrice uin
 	return offers, nil
 }
 
-// ConnectedGateways returns a slide of the URLs for the gateways this client is connected to.
+// ConnectedGateways returns a slice of the URLs for the gateways this client is connected to.
 func (c *FilecoinRetrievalClient) ConnectedGateways() []string {
 	return c.gatewayManager.GetConnectedGateways()
 }
