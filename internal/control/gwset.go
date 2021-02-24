@@ -54,6 +54,9 @@ func (g *GatewayManager) FindGateways(location []string, maxNumToLocate int) ([]
 // AddGateways adds one or more gateways to use.
 // Returns the number of gateways added.
 func (g *GatewayManager) AddGateways(gwNodeIDs []*nodeid.NodeID) int {
+	g.gatewaysToUseLock.RLock()
+	defer g.gatewaysToUseLock.RUnlock()
+
 	numAdded := 0
 	for _, gwToUseID := range gwNodeIDs {
 		add := true
@@ -74,6 +77,9 @@ func (g *GatewayManager) AddGateways(gwNodeIDs []*nodeid.NodeID) int {
 
 // RemoveGateways removes one or more gateways from the list of Gateways to use.
 func (g *GatewayManager) RemoveGateways(gwNodeIDs []*nodeid.NodeID) int {
+	g.gatewaysToUseLock.RLock()
+	defer g.gatewaysToUseLock.RUnlock()
+
 	numRemoved := 0
 	for _, gwToRemoveID := range gwNodeIDs {
 		for i, gwID := range g.gatewaysToUse {
@@ -93,6 +99,9 @@ func (g *GatewayManager) RemoveGateways(gwNodeIDs []*nodeid.NodeID) int {
 
 // RemoveAllGateways removes all gateways from the list of Gateways to use.
 func (g *GatewayManager) RemoveAllGateways() int {
+	g.gatewaysToUseLock.RLock()
+	defer g.gatewaysToUseLock.RUnlock()
+
 	numRemoved := len(g.gatewaysToUse)
 	g.gatewaysToUse = g.gatewaysToUse[:0]
 

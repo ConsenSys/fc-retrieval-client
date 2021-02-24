@@ -39,6 +39,7 @@ type GatewayManager struct {
 
 	// List of gateway to use. A client may request a node be added to this list e
 	gatewaysToUse []*nodeid.NodeID
+	gatewaysToUseLock sync.RWMutex
 
 	done 				 chan bool
 	ticker       *time.Ticker
@@ -56,6 +57,8 @@ func NewGatewayManager(settings settings.ClientSettings) *GatewayManager {
 	g := GatewayManager{}
 	g.settings = settings
 	g.gatewaysToUse = make([]*nodeid.NodeID, 0)
+	g.gatewaysToUseLock = sync.RWMutex{}
+	g.gatewaysLock = sync.RWMutex{}
 	g.gatewayManagerRunner()
 	return &g
 }
@@ -89,13 +92,21 @@ func (g *GatewayManager) gatewayManagerRunner() {
 }
 
 // get the latest gateway information from the registry.
-// Note that this is run inside a go routine. No e
+// Note that this is run inside a go routine. 
 func (g *GatewayManager) getLatestGatewayInfo() {
+	// Take a snapshot of the slice of gateways to use.
+	// Note that this will copy the pointers, but not clone 
+	// the underlying NodeIDs. This should be OK as the NodeIDs 
+	// are not changed once set.
+	g.gatewaysToUseLock.RLock()
+	gatewaysToUseSnapshot := g.gatewaysToUse
+	g.gatewaysToUseLock.RUnlock()
+
 	// Remove any gateways that are no longer in the list of gateways to use.
 	gatewaysToRemove := make([]*nodeid.NodeID, 0)
 	for _, gwInfo := range g.gateways {
 		notFound := true
-		for _, gwNodeID := range g.gatewaysToUse {
+		for _, gwNodeID := range gatewaysToUseSnapshot {
 			if gwNodeID.ToString() == gwInfo.nodeID.ToString() {
 				notFound = false
 				break;
@@ -105,6 +116,7 @@ func (g *GatewayManager) getLatestGatewayInfo() {
 			gatewaysToRemove = append(gatewaysToRemove, gwInfo.nodeID)
 		}
 	}
+	g.gatewaysLock.RLock()
 	for _, gwNodeID := range gatewaysToRemove {
 		for i, gwInfo := range g.gateways {
 			if gwNodeID.ToString() == gwInfo.nodeID.ToString() {
@@ -113,6 +125,9 @@ func (g *GatewayManager) getLatestGatewayInfo() {
 			}
 		}
 	}
+	g.gatewaysLock.RUnlock()
+
+
 
 
 	// Get the latest information from the register for exixting gateways
@@ -122,14 +137,16 @@ func (g *GatewayManager) getLatestGatewayInfo() {
 
 
 	// Add information for new gateways.
-	for _, gwNodeID := range g.gatewaysToUse {
+	for _, gwNodeID := range gatewaysToUseSnapshot {
 		found := false
+		g.gatewaysLock.RLock()
 		for _, gwInfo := range g.gateways {
 			if gwNodeID.ToString() == gwInfo.nodeID.ToString() {
 				found = true
 				break;
 			}
 		}
+		g.gatewaysLock.RUnlock()
 		if !found {
 			g.addGateway(gwNodeID)
 		}
@@ -140,12 +157,16 @@ func (g *GatewayManager) getLatestGatewayInfo() {
 
 // FindOffersStandardDiscovery finds offers using the standard discovery mechanism.
 func (g *GatewayManager) FindOffersStandardDiscovery(contentID *cid.ContentID) ([]cidoffer.CidGroupOffer, error) {
-	if len(g.gateways) == 0 {
+	g.gatewaysLock.RLock()
+	gatewaysSnapshot := g.gateways
+	g.gatewaysLock.RUnlock()
+
+	if len(gatewaysSnapshot) == 0 {
 		return nil, fmt.Errorf("No gateways available")
 	}
 
 	var aggregateOffers []cidoffer.CidGroupOffer
-	for _, gw := range g.gateways {
+	for _, gw := range gatewaysSnapshot {
 		// TODO need to do nonce management
 		// TODO need to do requests to all gateways in parallel, rather than serially
 		offers, err := gw.comms.GatewayStdCIDDiscovery(contentID, 1)
@@ -217,7 +238,9 @@ func (g *GatewayManager) addGateway(nodeID *nodeid.NodeID) {
 	}
 
 	activeGateway := ActiveGateway{gw, comms, gatewayID}
+	g.gatewaysLock.RLock()
 	g.gateways = append(g.gateways, activeGateway)
+	g.gatewaysLock.RUnlock()
 
 	if len(g.gateways) > 0 {
 		logging.Info("Gateway Manager using %d gateways", len(g.gateways))
