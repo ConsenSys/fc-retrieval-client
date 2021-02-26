@@ -18,9 +18,9 @@ package gatewayapi
 import (
 	"encoding/base64"
 
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrmessages"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrmessages"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 )
 
 // GatewayClientEstablishment sends a GatewayClientEstablishmentRequest and processes a response.

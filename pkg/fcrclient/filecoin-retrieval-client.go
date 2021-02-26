@@ -18,10 +18,10 @@ package fcrclient
 import (
 	"github.com/ConsenSys/fc-retrieval-client/internal/control"
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cid"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cidoffer"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/cidoffer"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 )
 
 // FilecoinRetrievalClient holds information about the interaction of
@@ -40,7 +40,6 @@ func NewFilecoinRetrievalClient(conf Settings) (*FilecoinRetrievalClient, error)
 	return &c, nil
 
 }
-
 
 // FindGateways find gateways located near too the specified location. Use AddGateways
 // to use these gateways.
@@ -73,12 +72,10 @@ func (c *FilecoinRetrievalClient) GetGateways() []*nodeid.NodeID {
 	return c.gatewayManager.GetGateways()
 }
 
-
-
 // FindBestOffers locates offsers for supplying the content associated with the pieceCID
-func (c *FilecoinRetrievalClient) FindBestOffers(pieceCID [32]byte, maxPrice uint64, maxExpectedLatency int64) ([]cidoffer.CidGroupOffer, error){
+func (c *FilecoinRetrievalClient) FindBestOffers(pieceCID [32]byte, maxPrice uint64, maxExpectedLatency int64) ([]cidoffer.CidGroupOffer, error) {
 	cid := cid.NewContentIDFromBytes(pieceCID[:])
-	logging.Trace("FindBestOffers(pieceCID: %s, maxPrice: %d, maxExpectedLatency: %d", 
+	logging.Trace("FindBestOffers(pieceCID: %s, maxPrice: %d, maxExpectedLatency: %d",
 		cid.ToString(), maxPrice, maxExpectedLatency)
 
 	rawOffers, err := c.gatewayManager.FindOffersStandardDiscovery(cid)
@@ -102,7 +99,6 @@ func (c *FilecoinRetrievalClient) FindBestOffers(pieceCID [32]byte, maxPrice uin
 func (c *FilecoinRetrievalClient) ConnectedGateways() []string {
 	return c.gatewayManager.GetConnectedGateways()
 }
-
 
 // Shutdown releases all resources used by the library
 func (c *FilecoinRetrievalClient) Shutdown() {

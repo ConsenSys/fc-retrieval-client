@@ -22,7 +22,7 @@ import (
 
 	"github.com/tatsushid/go-fastping"
 
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 )
 
 // Ping pings a remote server via ICMP

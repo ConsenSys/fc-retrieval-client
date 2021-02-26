@@ -5,8 +5,8 @@ package settings
 // Filecoin Retrieval Client Settings
 
 import (
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 )
 
 // ClientSettings holds the library configuration

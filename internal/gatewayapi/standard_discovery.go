@@ -18,11 +18,11 @@ package gatewayapi
 import (
 	//	"encoding/base64"
 
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cid"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cidoffer"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrmessages"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/cidoffer"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrmessages"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 )
 
 // GatewayStdCIDDiscovery sends a  and processes a response.
@@ -40,7 +40,7 @@ func (c *Comms) GatewayStdCIDDiscovery(contentID *cid.ContentID, nonce int64) ([
 		logging.Error("Error signing message for Client Standard Discovery Request: %+v", err)
 		return nil, err
 	}
-	
+
 	// TODO
 	res := c.gatewayCall(request).Get("result").MustString()
 	// TODO interpret the response.
@@ -48,4 +48,3 @@ func (c *Comms) GatewayStdCIDDiscovery(contentID *cid.ContentID, nonce int64) ([
 	// TODO
 	return nil, nil
 }
-

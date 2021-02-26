@@ -20,11 +20,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cid"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/cidoffer"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/cidoffer"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 	"github.com/ConsenSys/fc-retrieval-register/pkg/register"
 
 	"github.com/ConsenSys/fc-retrieval-client/internal/gatewayapi"
@@ -38,17 +38,17 @@ type GatewayManager struct {
 	gatewaysLock sync.RWMutex
 
 	// List of gateway to use. A client may request a node be added to this list e
-	gatewaysToUse []*nodeid.NodeID
+	gatewaysToUse     []*nodeid.NodeID
 	gatewaysToUseLock sync.RWMutex
 
-	done 				 chan bool
-	ticker       *time.Ticker
+	done   chan bool
+	ticker *time.Ticker
 }
 
 // ActiveGateway contains information for a single gateway
 type ActiveGateway struct {
-	info  register.GatewayRegister
-	comms *gatewayapi.Comms
+	info   register.GatewayRegister
+	comms  *gatewayapi.Comms
 	nodeID *nodeid.NodeID
 }
 
@@ -63,16 +63,13 @@ func NewGatewayManager(settings settings.ClientSettings) *GatewayManager {
 	return &g
 }
 
-
 // Get the latest gateway information now.
 func (g *GatewayManager) requestUpdate() {
 	// TODO should not call this if it is already running.
 	g.getLatestGatewayInfo()
 }
 
-
-
-// gatewayManagerRunner gets the latest gateway information. 
+// gatewayManagerRunner gets the latest gateway information.
 func (g *GatewayManager) gatewayManagerRunner() {
 	logging.Info("Gateway Manager: Management thread started")
 
@@ -81,22 +78,22 @@ func (g *GatewayManager) gatewayManagerRunner() {
 
 	go func() {
 		for {
-				select {
-				case <-g.done:
-						return
-				case <-g.ticker.C:
-						g.getLatestGatewayInfo()
-				}
+			select {
+			case <-g.done:
+				return
+			case <-g.ticker.C:
+				g.getLatestGatewayInfo()
+			}
 		}
 	}()
 }
 
 // get the latest gateway information from the registry.
-// Note that this is run inside a go routine. 
+// Note that this is run inside a go routine.
 func (g *GatewayManager) getLatestGatewayInfo() {
 	// Take a snapshot of the slice of gateways to use.
-	// Note that this will copy the pointers, but not clone 
-	// the underlying NodeIDs. This should be OK as the NodeIDs 
+	// Note that this will copy the pointers, but not clone
+	// the underlying NodeIDs. This should be OK as the NodeIDs
 	// are not changed once set.
 	g.gatewaysToUseLock.RLock()
 	gatewaysToUseSnapshot := g.gatewaysToUse
@@ -109,7 +106,7 @@ func (g *GatewayManager) getLatestGatewayInfo() {
 		for _, gwNodeID := range gatewaysToUseSnapshot {
 			if gwNodeID.ToString() == gwInfo.nodeID.ToString() {
 				notFound = false
-				break;
+				break
 			}
 		}
 		if notFound {
@@ -127,14 +124,10 @@ func (g *GatewayManager) getLatestGatewayInfo() {
 	}
 	g.gatewaysLock.RUnlock()
 
-
-
-
 	// Get the latest information from the register for exixting gateways
 	// for _, gwInfo := range g.gateways {
 	// 	// TODO
 	// }
-
 
 	// Add information for new gateways.
 	for _, gwNodeID := range gatewaysToUseSnapshot {
@@ -143,7 +136,7 @@ func (g *GatewayManager) getLatestGatewayInfo() {
 		for _, gwInfo := range g.gateways {
 			if gwNodeID.ToString() == gwInfo.nodeID.ToString() {
 				found = true
-				break;
+				break
 			}
 		}
 		g.gatewaysLock.RUnlock()
@@ -152,8 +145,6 @@ func (g *GatewayManager) getLatestGatewayInfo() {
 		}
 	}
 }
-
-
 
 // FindOffersStandardDiscovery finds offers using the standard discovery mechanism.
 func (g *GatewayManager) FindOffersStandardDiscovery(contentID *cid.ContentID) ([]cidoffer.CidGroupOffer, error) {
@@ -248,4 +239,3 @@ func (g *GatewayManager) addGateway(nodeID *nodeid.NodeID) {
 		logging.Warn("No gateways available")
 	}
 }
-

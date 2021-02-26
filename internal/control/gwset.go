@@ -16,13 +16,11 @@ package control
  */
 
 import (
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 	"github.com/ConsenSys/fc-retrieval-register/pkg/register"
-
-//	"github.com/ConsenSys/fc-retrieval-client/internal/gatewayapi"
+	//	"github.com/ConsenSys/fc-retrieval-client/internal/gatewayapi"
 )
-
 
 // FindGateways find gateways located near too the specified location. Use AddGateways
 // to use these gateways.

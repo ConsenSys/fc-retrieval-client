@@ -5,13 +5,11 @@ package fcrclient
 // Filecoin Retrieval Client Settings
 
 import (
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/nodeid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
 )
-
-
 
 // SettingsBuilder holds the library configuration
 type SettingsBuilder interface {

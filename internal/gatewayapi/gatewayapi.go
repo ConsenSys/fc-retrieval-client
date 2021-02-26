@@ -9,8 +9,8 @@ import (
 	"net/http"
 
 	"github.com/ConsenSys/fc-retrieval-client/internal/settings"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/fcrcrypto"
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 	"github.com/ConsenSys/fc-retrieval-register/pkg/register"
 	"github.com/bitly/go-simplejson"
 )

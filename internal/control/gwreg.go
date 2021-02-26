@@ -16,10 +16,9 @@ package control
  */
 
 import (
-	"github.com/ConsenSys/fc-retrieval-gateway/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 	"github.com/ConsenSys/fc-retrieval-register/pkg/register"
 )
-
 
 // Validate the information coming from the Register.
 // Return true if the information is valid.
