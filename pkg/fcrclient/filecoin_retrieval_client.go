@@ -52,7 +52,7 @@ type FilecoinRetrievalClient struct {
 }
 
 // NewFilecoinRetrievalClient initialise the Filecoin Retrieval Client library
-func NewFilecoinRetrievalClient(settings ClientSettings) (*FilecoinRetrievalClient, error) {
+func NewFilecoinRetrievalClient(settings ClientSettings) *FilecoinRetrievalClient {
 	f := &FilecoinRetrievalClient{
 		Settings:           settings,
 		GatewaysToUse:      make(map[string]register.GatewayRegister),
@@ -64,12 +64,12 @@ func NewFilecoinRetrievalClient(settings ClientSettings) (*FilecoinRetrievalClie
 	mgr, err := fcrpaymentmgr.NewFCRPaymentMgr(settings.walletPrivateKey, settings.lotusAP, settings.lotusAuthToken)
 	if err != nil {
 		logging.Error("Error initializing payment manager.")
-		return nil, err
+		return nil
 	}
 
 	f.PaymentMgr = mgr
 
-	return f, nil
+	return f
 }
 
 // FindGateways find gateways located near to the specified location. Use AddGateways
