@@ -491,36 +491,27 @@ func (c *FilecoinRetrievalClient) FindOffersStandardDiscoveryV2(contentID *cid.C
 		return make([]cidoffer.SubCIDOffer, 0), errors.New("Given gatewayID is not in active nodes map")
 	}
 
-	mgr, err := c.CreatePaymentMgr()
-	if err != nil {
-		logging.Warn("CreatePaymentMgr error. Gateway: %s, Error: %s", gw.NodeID, err)
-		return make([]cidoffer.SubCIDOffer, 0), errors.New("Error creating payment manager")
-	}
 	// It will call the payment manager to pay for the initial request
-	paychAddrs, voucher, topup, cidOffers, err := c.pay(mgr, gw)
+	paychAddrs, voucher, topup, cidOffers, err := c.pay(gw)
 	if err != nil {
 		return cidOffers, err
 	}
 
 	// There isn't any balance in the payment channel, need to topup (create)
 	if topup == true {
-		//  4. If creating voucher failed, it should attempt to topup the payment channel first.
-		//         If topup succeed but creating voucher failed again, it shouldn’t happen,
-		//      	  and in this case it should return error indicating a bug.
-
 		// If topup failed, then there is not enough balance, return error.
-		err = mgr.Topup(gw.NodeID, c.Settings.TopUpAmount())
+		err = c.PaymentMgr.Topup(gw.NodeID, c.Settings.TopUpAmount())
 		if err != nil {
 			logging.Warn("Topup. Gateway: %s, Error: %s", gw.NodeID, err)
 			return make([]cidoffer.SubCIDOffer, 0), errors.New("Error in payment manager topup - is not enough balance")
 		}
-		paychAddrs, voucher, topup, cidOffers, err = c.pay(mgr, gw)
+		paychAddrs, voucher, topup, cidOffers, err = c.pay(gw)
 		if err != nil {
 			return cidOffers, err
 		}
 	}
 
-	// TODO 2. It pays for the first request to get a list of offer digests.
+	// It pays for the first request to get a list of offer digests.
 	// TODO need to do nonce management
 	offerDigests, err := clientapi.RequestStandardDiscoverV2(&gw, contentID, rand.Int63(), time.Now().Unix()+c.Settings.EstablishmentTTL(), paychAddrs, voucher)
 	if err != nil {
@@ -531,6 +522,7 @@ func (c *FilecoinRetrievalClient) FindOffersStandardDiscoveryV2(contentID *cid.C
 	// Depend on the input (maximum num of offers) It will send further requests to request offers from the same gateway.
 	offers, err := clientapi.RequestStandardDiscoverOffer(&gw, contentID, rand.Int63(), time.Now().Unix()+c.Settings.EstablishmentTTL(), offerDigests, paychAddrs, voucher)
 
+	var validOffers []cidoffer.SubCIDOffer
 	// Verify the offer one by one
 	for _, offer := range offers {
 		// Get provider's pubkey
@@ -560,16 +552,21 @@ func (c *FilecoinRetrievalClient) FindOffersStandardDiscoveryV2(contentID *cid.C
 		}
 		// Offer pass verification
 		logging.Info("Offer pass every verification, added to result")
+
+		validOffers = append(validOffers, offer)
+		if len(validOffers) == maxOffers {
+			break
+		}
 	}
 
-	return offers, nil
+	return validOffers, nil
 }
 
-func (c *FilecoinRetrievalClient) pay(mgr *fcrpaymentmgr.FCRPaymentMgr, gw register.GatewayRegister) (string, string, bool, []cidoffer.SubCIDOffer, error) {
-	paychAddrs, voucher, topup, err := mgr.Pay(gw.NodeID, 0, c.Settings.searchPrice)
+func (c *FilecoinRetrievalClient) pay(gw register.GatewayRegister) (string, string, bool, []cidoffer.SubCIDOffer, error) {
+	paychAddrs, voucher, topup, err := c.PaymentMgr.Pay(gw.NodeID, 0, c.Settings.searchPrice)
 	if err != nil {
 		logging.Warn("Pay error. Gateway: %s, Error: %s", gw.NodeID, err)
-		return "", "", false, make([]cidoffer.SubCIDOffer, 0), errors.New("Error in payment manager pay")
+		return "", "", false, []cidoffer.SubCIDOffer{}, errors.New("Error in payment manager pay")
 	}
 	return paychAddrs, voucher, topup, nil, nil
 }
