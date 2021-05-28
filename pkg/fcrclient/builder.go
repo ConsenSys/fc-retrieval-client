@@ -16,6 +16,8 @@ package fcrclient
  */
 
 import (
+	"math/big"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
@@ -38,9 +40,9 @@ type SettingsBuilder struct {
 	walletPrivateKey string
 	lotusAP          string
 	lotusAuthToken   string
-	searchPrice      string
-	offerPrice       string
-	topUpAmount      string
+	searchPrice      *big.Int
+	offerPrice       *big.Int
+	topUpAmount      *big.Int
 }
 
 // CreateSettings creates an object with the default settings.
@@ -51,9 +53,9 @@ func CreateSettings() *SettingsBuilder {
 	f.logServiceName = defaultLogServiceName
 	f.establishmentTTL = defaultEstablishmentTTL
 	f.registerURL = defaultRegisterURL
-	f.searchPrice = defaultSearchPrice
-	f.offerPrice = defaultOfferPrice
-	f.topUpAmount = defaultTopUpAmount
+	f.searchPrice = big.NewInt(defaultSearchPrice)
+	f.offerPrice = big.NewInt(defaultOfferPrice)
+	f.topUpAmount = big.NewInt(defaultTopUpAmount)
 	return &f
 }
 
@@ -97,15 +99,15 @@ func (f *SettingsBuilder) SetLotusAuthToken(lotusAuthToken string) {
 	f.lotusAuthToken = lotusAuthToken
 }
 
-func (f *SettingsBuilder) SetSearchPrice(searchPrice string) {
+func (f *SettingsBuilder) SetSearchPrice(searchPrice *big.Int) {
 	f.searchPrice = searchPrice
 }
 
-func (f *SettingsBuilder) SetOfferPrice(offerPrice string) {
+func (f *SettingsBuilder) SetOfferPrice(offerPrice *big.Int) {
 	f.offerPrice = offerPrice
 }
 
-func (f *SettingsBuilder) SetTopUpAmount(topUpAmount string) {
+func (f *SettingsBuilder) SetTopUpAmount(topUpAmount *big.Int) {
 	f.topUpAmount = topUpAmount
 }
 

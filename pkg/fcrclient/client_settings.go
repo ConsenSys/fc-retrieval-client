@@ -16,6 +16,8 @@ package fcrclient
  */
 
 import (
+	"math/big"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 )
@@ -34,9 +36,9 @@ type ClientSettings struct {
 	walletPrivateKey string
 	lotusAP          string
 	lotusAuthToken   string
-	searchPrice      string
-	offerPrice       string
-	topUpAmount      string
+	searchPrice      *big.Int
+	offerPrice       *big.Int
+	topUpAmount      *big.Int
 }
 
 // WalletPrivateKey returns the wallet private key
@@ -55,17 +57,17 @@ func (c ClientSettings) LotusAuthToken() string {
 }
 
 // SearchPrice returns the search price
-func (c ClientSettings) SearchPrice() string {
+func (c ClientSettings) SearchPrice() *big.Int {
 	return c.searchPrice
 }
 
 // OfferPrice returns offer price
-func (c ClientSettings) OfferPrice() string {
+func (c ClientSettings) OfferPrice() *big.Int {
 	return c.offerPrice
 }
 
 // TopUpAmount returns the  top up amount
-func (c ClientSettings) TopUpAmount() string {
+func (c ClientSettings) TopUpAmount() *big.Int {
 	return c.topUpAmount
 }
 
