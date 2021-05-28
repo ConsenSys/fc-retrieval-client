@@ -48,7 +48,8 @@ type FilecoinRetrievalClient struct {
 	ActiveGatewaysLock sync.RWMutex
 
 	// PaymentMgr payment manager
-	PaymentMgr *fcrpaymentmgr.FCRPaymentMgr
+	paymentMgr     *fcrpaymentmgr.FCRPaymentMgr
+	paymentMgrLock sync.RWMutex
 }
 
 // NewFilecoinRetrievalClient initialise the Filecoin Retrieval Client library
@@ -61,15 +62,23 @@ func NewFilecoinRetrievalClient(settings ClientSettings) (*FilecoinRetrievalClie
 		ActiveGatewaysLock: sync.RWMutex{},
 	}
 
-	mgr, err := fcrpaymentmgr.NewFCRPaymentMgr(settings.walletPrivateKey, settings.lotusAP, settings.lotusAuthToken)
-	if err != nil {
-		logging.Error("Error initializing payment manager.")
-		return nil, err
-	}
-
-	f.PaymentMgr = mgr
-
 	return f, nil
+}
+
+func (f *FilecoinRetrievalClient) PaymentMgr() *fcrpaymentmgr.FCRPaymentMgr {
+	if f.paymentMgr == nil {
+		f.paymentMgrLock.Lock()
+		defer f.paymentMgrLock.Unlock()
+		if f.paymentMgr == nil {
+			mgr, err := fcrpaymentmgr.NewFCRPaymentMgr(f.Settings.walletPrivateKey, f.Settings.lotusAP, f.Settings.lotusAuthToken)
+			if err != nil {
+				logging.Error("Error initializing payment manager.")
+				return nil
+			}
+			f.paymentMgr = mgr
+		}
+	}
+	return f.paymentMgr
 }
 
 // FindGateways find gateways located near to the specified location. Use AddGateways
@@ -500,7 +509,7 @@ func (c *FilecoinRetrievalClient) FindOffersStandardDiscoveryV2(contentID *cid.C
 	// There isn't any balance in the payment channel, need to topup (create)
 	if topup == true {
 		// If topup failed, then there is not enough balance, return error.
-		err = c.PaymentMgr.Topup(gw.NodeID, c.Settings.TopUpAmount())
+		err = c.PaymentMgr().Topup(gw.NodeID, c.Settings.TopUpAmount())
 		if err != nil {
 			logging.Warn("Topup. Gateway: %s, Error: %s", gw.NodeID, err)
 			return make([]cidoffer.SubCIDOffer, 0), errors.New("Error in payment manager topup - is not enough balance")
@@ -563,7 +572,7 @@ func (c *FilecoinRetrievalClient) FindOffersStandardDiscoveryV2(contentID *cid.C
 }
 
 func (c *FilecoinRetrievalClient) pay(gw register.GatewayRegister) (string, string, bool, []cidoffer.SubCIDOffer, error) {
-	paychAddrs, voucher, topup, err := c.PaymentMgr.Pay(gw.NodeID, 0, c.Settings.searchPrice)
+	paychAddrs, voucher, topup, err := c.PaymentMgr().Pay(gw.NodeID, 0, c.Settings.searchPrice)
 	if err != nil {
 		logging.Warn("Pay error. Gateway: %s, Error: %s", gw.NodeID, err)
 		return "", "", false, []cidoffer.SubCIDOffer{}, errors.New("Error in payment manager pay")
