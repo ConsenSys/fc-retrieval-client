@@ -30,8 +30,8 @@ github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9/go.mod h1:bOv
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/ConsenSys/fc-retrieval-common v0.0.0-20210528065354-c6a241be1ec8 h1:rlcQfa7DoPqrF/swP8iMWo8rmhWwltIL9+nuWFghcb0=
-github.com/ConsenSys/fc-retrieval-common v0.0.0-20210528065354-c6a241be1ec8/go.mod h1:FcTZiMqtqI1Oj5nGLMekMNxHogC/0ZxV6po7iskauy8=
+github.com/ConsenSys/fc-retrieval-common v0.0.0-20210531085459-8faba6d948aa h1:PUnumEoAI3K4z61cos8ltvAfKQ4A+myjd1rGl3Oz7+g=
+github.com/ConsenSys/fc-retrieval-common v0.0.0-20210531085459-8faba6d948aa/go.mod h1:FcTZiMqtqI1Oj5nGLMekMNxHogC/0ZxV6po7iskauy8=
 github.com/DataDog/zstd v1.4.1/go.mod h1:1jcaCB/ufaK+sKp1NBhlGmpz41jOoPQ35bpF36t7BBo=
 github.com/GeertJohan/go.incremental v1.0.0 h1:7AH+pY1XUgQE4Y1HcXYaMqAI0m9yrFqo/jt0CW30vsg=
 github.com/GeertJohan/go.incremental v1.0.0/go.mod h1:6fAjUhbVuX1KcMD3c8TEgVUqmo4seqhv0i0kdATSkM0=
